@@ -124,17 +124,16 @@ me.say_hi()
 <!--START_SECTION:waka-->
 
 ```txt
-From: 03 July 2022 - To: 18 June 2025
+From: 03 July 2022 - To: 19 June 2025
 
-Total Time: 405 hrs 13 mins
+Total Time: 411 hrs 16 mins
 
-Python                 316 hrs 3 mins  ███████████████████▓░░░░░   78.00 %
-HTML                   11 hrs 54 mins  ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.94 %
-Markdown               7 hrs 40 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.90 %
-TypeScript             7 hrs 31 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.86 %
-Jinja                  6 hrs 57 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.72 %
-Bash                   3 hrs 18 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   00.82 %
-GitIgnore file         2 hrs 58 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   00.74 %
+Python                 319 hrs 6 mins  ███████████████████▒░░░░░   77.59 %
+HTML                   11 hrs 54 mins  ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.90 %
+Markdown               8 hrs 30 mins   ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.07 %
+Jinja                  7 hrs 50 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.91 %
+TypeScript             7 hrs 31 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.83 %
+Bash                   3 hrs 19 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   00.81 %
 ```
 
 <!--END_SECTION:waka-->
