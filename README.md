@@ -27,7 +27,7 @@ me.say_hi()
 <div align="center">
 
 [![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?&logo=linkedin&logoColor=white)](https://linkedin.com/in/solanki-jaydeep)
-[![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:jaydeep.solankee@yahoo.com)
+[![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:contactjaydeepsolanki@gmail.com)
 
 </div>
 
