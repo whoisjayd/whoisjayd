@@ -39,7 +39,7 @@ me.say_hi()
   </a>
 </div>
 
----
+
 
 ## 🚀 Currently Building
 
@@ -54,7 +54,7 @@ me.say_hi()
 
 </div>
 
----
+
 
 ## 🛠️ Tech Arsenal
 
@@ -101,7 +101,7 @@ me.say_hi()
 
 </div>
 
----
+
 
 ## 📊 GitHub Analytics
 
@@ -115,7 +115,7 @@ me.say_hi()
   <img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=whoisjayd&theme=react-dark&hide_border=true&custom_title=Contribution%20Activity" alt="Contribution Graph"/>
 </div>
 
----
+
 
 ## 🎵 What I'm Up To
 
@@ -143,7 +143,7 @@ me.say_hi()
 
 </div>
 
----
+
 
 <div align="center">
   
