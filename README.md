@@ -1,154 +1,160 @@
+# 👋 Hey, I'm Jaydeep
 
-
-
-<div align="center">
-
-# Hey, It's Jaydeep 🐍
-
-</div>
 
 ```python
 class JaydeepSolanki:
     def __init__(self):
         self.name = "Jaydeep Solanki"
-        self.role = ["Backend Developer", "AI Enthusiast"]
-        self.education = "B.Tech in ECE @ Nirma University"
-        self.interests = ["Generative AI", "System Design", "Automation"]
-        self.fun_fact = "I debug best while listening to random beats...😄"
-    
-    def say_hi(self):
-        print("Thanks for dropping by! Let's build something amazing together! 🚀")
+        self.alias = "Jay"
+        self.role = ["Backend Developer", "Tech Explorer", "AI Enthusiast"]
+        self.education = "🎓 B.Tech in ECE @ Nirma University"
+        self.interests = [
+            "⚙️ Building Scalable Systems", 
+            "🧠 Generative AI", 
+            "📈 Automation & Optimization", 
+            "🌐 Clean Web Architectures"
+        ]
+        self.vibe = "Minimal code. Maximum impact."
+        self.fun_fact = "I debug best while vibing to random chill beats 🎧"
 
-# Let's connect!
+    def say_hi(self):
+        print(f"Hey, I'm {self.alias} 👋")
+        print("Backend brain with a frontend curiosity.")
+        print("Let’s innovate, build, and break limits together. 🚀")
+
+# 🔗 Let's connect and collaborate!
 me = JaydeepSolanki()
 me.say_hi()
+
 ```
 
-<div align="center">
+<br>
 
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0077B5?&logo=linkedin&logoColor=white)](https://linkedin.com/in/solanki-jaydeep)
-[![Email](https://img.shields.io/badge/Email-D14836?logo=gmail&logoColor=white)](mailto:contactjaydeepsolanki@gmail.com)
+<div align="center">
+  <a href="https://linkedin.com/in/solanki-jaydeep">
+    <img src="https://img.shields.io/badge/LinkedIn-0077B5?style=for-the-badge&logo=linkedin&logoColor=white" alt="LinkedIn" />
+  </a>
+  <a href="mailto:contactjaydeepsolanki@gmail.com">
+    <img src="https://img.shields.io/badge/Email-EA4335?style=for-the-badge&logo=gmail&logoColor=white" alt="Email" />
+  </a>
+</div>
+
+---
+
+## 🚀 Currently Building
+
+<div align="left">
+  
+🔥 **Building:** High-performance backend systems, Generative AI APIs using FastAPI and LangChain<br>
+🌐 **Exploring:** Scalable architectures with microservices, containerization, and cloud-native solutions<br>
+📝 **Passionate about:** AI-driven applications, automation, and system optimization<br>
+📚 **Learning:** Golang, Django REST Framework  <br>
+🎧 **Listening to:** Random beats while coding for that extra flow<br>
+
 
 </div>
 
+---
 
-
-## 🔭 What I'm Currently Focused On
-
-* **Building:** Generative AI applications with LangChain and exploring advanced RAG pipelines.
-* **Learning:** Golang, Django REST Framework.
-* **Collaborating on:** Open-source GenAI projects and APIs.
-* **Exploring:** Cloud-native architecture, containerization with Docker, and scalable system design.
-
-## 🛠️ My Tech Stack
-
-<table>
-  <tr>
-    <td align="center"><strong>Languages</strong></td>
-    <td>
-      <img src="https://img.shields.io/badge/Python-3670A0?style=flat&logo=python&logoColor=ffdd54" alt="Python">
-      <img src="https://img.shields.io/badge/Go-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
-      <img src="https://img.shields.io/badge/JavaScript-323330?style=flat&logo=javascript&logoColor=F7DF1E" alt="JavaScript">
-      <img src="https://img.shields.io/badge/TypeScript-007ACC?style=flat&logo=typescript&logoColor=white" alt="TypeScript">
-      <img src="https://img.shields.io/badge/C++-00599C?style=flat&logo=c%2B%2B&logoColor=white" alt="C++">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Backend & Frameworks</strong></td>
-    <td>
-      <img src="https://img.shields.io/badge/FastAPI-005571?style=flat&logo=fastapi" alt="FastAPI">
-      <img src="https://img.shields.io/badge/Django-092E20?style=flat&logo=django&logoColor=white" alt="Django">
-      <img src="https://img.shields.io/badge/Flask-000000?style=flat&logo=flask&logoColor=white" alt="Flask">
-      <img src="https://img.shields.io/badge/Next.js-000000?style=flat&logo=next.js&logoColor=white" alt="Next.js">
-      <img src="https://img.shields.io/badge/Express.js-404D59?style=flat&logo=express&logoColor=white" alt="Express.js">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Databases & Storage</strong></td>
-    <td>
-      <img src="https://img.shields.io/badge/MongoDB-4EA94B?style=flat&logo=mongodb&logoColor=white" alt="MongoDB">
-      <img src="https://img.shields.io/badge/PostgreSQL-316192?style=flat&logo=postgresql&logoColor=white" alt="PostgreSQL">
-      <img src="https://img.shields.io/badge/MySQL-4479A1?style=flat&logo=mysql&logoColor=white" alt="MySQL">
-      <img src="https://img.shields.io/badge/Redis-DD0031?style=flat&logo=redis&logoColor=white" alt="Redis">
-      <img src="https://img.shields.io/badge/SQLite-07405E?style=flat&logo=sqlite&logoColor=white" alt="SQLite">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><strong>Cloud & DevOps</strong></td>
-    <td>
-      <img src="https://img.shields.io/badge/AWS-FF9900?style=flat&logo=amazon-aws&logoColor=white" alt="AWS">
-      <img src="https://img.shields.io/badge/Google_Cloud-4285F4?style=flat&logo=google-cloud&logoColor=white" alt="Google Cloud">
-      <img src="https://img.shields.io/badge/Docker-0db7ed?style=flat&logo=docker&logoColor=white" alt="Docker">
-      <img src="https://img.shields.io/badge/Firebase-039BE5?style=flat&logo=firebase&logoColor=white" alt="Firebase">
-    </td>
-  </tr>
-  <tr>
-    <td align="center"><strong>AI/ML & Data</strong></td>
-    <td>
-      <img src="https://img.shields.io/badge/PyTorch-EE4C2C?style=flat&logo=PyTorch&logoColor=white" alt="PyTorch">
-      <img src="https://img.shields.io/badge/LangChain-121212?style=flat&logo=chainlink&logoColor=white" alt="LangChain">
-      <img src="https://img.shields.io/badge/Pandas-150458?style=flat&logo=pandas&logoColor=white" alt="Pandas">
-      <img src="https://img.shields.io/badge/NumPy-013243?style=flat&logo=numpy&logoColor=white" alt="NumPy">
-      <img src="https://img.shields.io/badge/OpenCV-white?style=flat&logo=opencv&logoColor=black" alt="OpenCV">
-    </td>
-  </tr>
-    <tr>
-    <td align="center"><strong>Hardware & IoT</strong></td>
-    <td>
-      <img src="https://img.shields.io/badge/Arduino-00979D?style=flat&logo=Arduino&logoColor=white" alt="Arduino">
-      <img src="https://img.shields.io/badge/Raspberry_Pi-C51A4A?style=flat&logo=Raspberry-Pi&logoColor=white" alt="Raspberry Pi">
-      <img src="https://img.shields.io/badge/CUDA-76B900?style=flat&logo=nVIDIA&logoColor=white" alt="CUDA">
-    </td>
-  </tr>
-</table>
-
-## 📊 My GitHub Stats
+## 🛠️ Tech Arsenal
 
 <div align="center">
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=whoisjayd&theme=github_dark" alt="Jaydeep Solanki's GitHub Stats" />
+
+### **Languages & Core**
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Go](https://img.shields.io/badge/Go-00ADD8?style=for-the-badge&logo=go&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+![C++](https://img.shields.io/badge/C++-00599C?style=for-the-badge&logo=c%2B%2B&logoColor=white)
+
+### **Backend & Frameworks**
+![FastAPI](https://img.shields.io/badge/FastAPI-009688?style=for-the-badge&logo=fastapi&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Flask](https://img.shields.io/badge/Flask-000000?style=for-the-badge&logo=flask&logoColor=white)
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge&logo=next.js&logoColor=white)
+![Express.js](https://img.shields.io/badge/Express.js-000000?style=for-the-badge&logo=express&logoColor=white)
+
+### **Databases & Storage**
+![MongoDB](https://img.shields.io/badge/MongoDB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=mysql&logoColor=white)
+![Redis](https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=redis&logoColor=white)
+![SQLite](https://img.shields.io/badge/SQLite-003B57?style=for-the-badge&logo=sqlite&logoColor=white)
+
+### **Cloud & DevOps**
+![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazon-aws&logoColor=white)
+![Google Cloud](https://img.shields.io/badge/Google_Cloud-4285F4?style=for-the-badge&logo=google-cloud&logoColor=white)
+![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)
+![Firebase](https://img.shields.io/badge/Firebase-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
+
+### **AI/ML & Data Science**
+![PyTorch](https://img.shields.io/badge/PyTorch-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white)
+![LangChain](https://img.shields.io/badge/LangChain-1C3C3C?style=for-the-badge&logo=chainlink&logoColor=white)
+![Pandas](https://img.shields.io/badge/Pandas-150458?style=for-the-badge&logo=pandas&logoColor=white)
+![NumPy](https://img.shields.io/badge/NumPy-013243?style=for-the-badge&logo=numpy&logoColor=white)
+![OpenCV](https://img.shields.io/badge/OpenCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white)
+
+### **Hardware & IoT**
+![Arduino](https://img.shields.io/badge/Arduino-00979D?style=for-the-badge&logo=arduino&logoColor=white)
+![Raspberry Pi](https://img.shields.io/badge/Raspberry_Pi-A22846?style=for-the-badge&logo=raspberry-pi&logoColor=white)
+![CUDA](https://img.shields.io/badge/CUDA-76B900?style=for-the-badge&logo=nvidia&logoColor=white)
+
 </div>
+
+---
+
+## 📊 GitHub Analytics
+
+<div align="center">
+  <img width="100%" src="https://github-profile-summary-cards.vercel.app/api/cards/profile-details?username=whoisjayd&theme=github_dark" alt="GitHub Profile Summary" />
+</div>
+
+<br>
+
+<div align="center">
+  <img width="100%" src="https://github-readme-activity-graph.vercel.app/graph?username=whoisjayd&theme=react-dark&hide_border=true&custom_title=Contribution%20Activity" alt="Contribution Graph"/>
+</div>
+
+---
+
+## 🎵 What I'm Up To
 
 <div align="center">
   
-## 🎧 My Activity
-
 <table>
 <tr>
-<td width="50%" valign="top">
-
-[![spotify-github-profile](https://spotify-github-profile.kittinanx.com/api/view?uid=v7979a26s0d6q6o4ncpdss42v&cover_image=true&theme=default&show_offline=false&background_color=121212&interchange=false&bar_color_cover=false)](https://spotify-github-profile.kittinanx.com/api/view?uid=v7979a26s0d6q6o4ncpdss42v&redirect=true)
-
+<td width="50%" align="center">
+  <h3>🎧 Currently Listening</h3>
+  
+  [![Spotify](https://spotify-github-profile.kittinanx.com/api/view?uid=v7979a26s0d6q6o4ncpdss42v&cover_image=true&theme=default&show_offline=false&background_color=121212&interchange=false&bar_color_cover=false)](https://spotify-github-profile.kittinanx.com/api/view?uid=v7979a26s0d6q6o4ncpdss42v&redirect=true)
+  
 </td>
-<td width="50%" valign="top">
-
-<!--START_SECTION:waka-->
-
-```txt
-From: 03 July 2022 - To: 23 June 2025
-
-Total Time: 423 hrs 32 mins
-
-Python                 325 hrs 27 mins ███████████████████▒░░░░░   76.84 %
-HTML                   12 hrs 1 min    ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.84 %
-TypeScript             10 hrs 34 mins  ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.50 %
-Markdown               9 hrs 16 mins   ▓░░░░░░░░░░░░░░░░░░░░░░░░   02.19 %
-Jinja                  7 hrs 53 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   01.86 %
-Bash                   3 hrs 31 mins   ▒░░░░░░░░░░░░░░░░░░░░░░░░   00.83 %
-```
-
-<!--END_SECTION:waka-->
+<td width="50%" align="center">
+  <h3>⚡ Coding Stats</h3>
+  
+  [![WakaTime](https://wakatime.com/badge/user/690b688d-373b-4fda-8b09-61da844c9526.svg?style=for-the-badge)](https://wakatime.com/@690b688d-373b-4fda-8b09-61da844c9526)
+  
+  <img src="github-stats/generated/overview.svg" alt="GitHub Overview" width="100%">
+  <img src="github-stats/generated/languages.svg" alt="Top Languages" width="100%">
+  
 </td>
 </tr>
 </table>
 
+</div>
 
+---
 
-<p align="center">
-  <img src="https://komarev.com/ghpvc/?username=whoisjayd&color=blueviolet&style=flat-square&label=Profile+Views" alt="Profile Views"/>
-</p>
+<div align="center">
+  
+![Profile Views](https://komarev.com/ghpvc/?username=whoisjayd&color=00d9ff&style=for-the-badge&label=Profile+Views)
 
-<p align="center">
-  <i>"Code is like humor. When you have to explain it, it's bad." – Cory House</i>
-</p>
+<br>
+
+*"Code is like humor. When you have to explain it, it's bad."* – **Cory House**
+
+<br>
+
+**✨ Thanks for stopping by! Let's create something incredible together! ✨**
 
 </div>

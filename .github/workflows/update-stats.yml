@@ -1,0 +1,47 @@
+name: Generate Stats Images
+
+on:
+  push:
+    branches: [ master ]
+  schedule:
+    - cron: "0 0 * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.8'
+        architecture: 'x64'
+        cache: 'pip'
+        cache-dependency-path: 'github-stats/requirements.txt'
+
+    - name: Install dependencies and generate images
+      working-directory: ./github-stats
+      run: |
+        python -m pip install -r requirements.txt
+        python generate_images.py
+      env:
+        ACCESS_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        EXCLUDED: ${{ secrets.EXCLUDED }}
+        EXCLUDED_LANGS: ${{ secrets.EXCLUDED_LANGS }}
+        EXCLUDE_FORKED_REPOS: 'true'
+
+    - name: Commit to the repo
+      run: |
+        git config --global user.name "whoisjayd"
+        git config --global user.email "github-stats[bot]@whoisjayd.github.io"
+        git add generated
+        # Force the build to succeed, even if no files were changed
+        git commit -m 'Update generated files' || true
+        git push
