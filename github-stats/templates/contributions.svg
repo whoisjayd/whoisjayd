@@ -1,0 +1,161 @@
+<svg id="gh-dark-mode-only" width="450" height="250" xmlns="http://www.w3.org/2000/svg">
+<style>
+svg {
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Helvetica, Arial, sans-serif, Apple Color Emoji, Segoe UI Emoji;
+  font-size: 14px;
+  line-height: 21px;
+}
+
+#background {
+  width: calc(100% - 10px);
+  height: calc(100% - 10px);
+  fill: #ffffff;
+  stroke: #d0d7de;
+  stroke-width: 1px;
+  rx: 10px;
+  ry: 10px;
+}
+
+#gh-dark-mode-only:target #background {
+  fill: #0d1117;
+  stroke: #30363d;
+}
+
+#accent-top {
+  fill: #0969da;
+}
+
+#gh-dark-mode-only:target #accent-top {
+  fill: #00d9ff;
+}
+
+foreignObject {
+  width: calc(100% - 42px);
+  height: calc(100% - 32px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: auto;
+}
+
+th {
+  padding: 0.5em 0.25em 0.5em 0;
+  text-align: left;
+  font-size: 15px;
+  font-weight: 700;
+  color: #0969da;
+}
+
+#gh-dark-mode-only:target th {
+  color: #00d9ff;
+}
+
+th.right {
+  text-align: right;
+  font-size: 12px;
+  font-weight: 400;
+  color: #57606a;
+}
+
+#gh-dark-mode-only:target th.right {
+  color: #8b949e;
+}
+
+td {
+  padding: 0.25em 0.25em;
+  font-size: 12px;
+  line-height: 18px;
+  color: #57606a;
+  vertical-align: middle;
+}
+
+#gh-dark-mode-only:target td {
+  color: #8b949e;
+}
+
+td.value {
+  font-weight: 600;
+  font-size: 13px;
+  color: #1f2328;
+  text-align: right;
+  white-space: nowrap;
+  padding-right: 0;
+}
+
+#gh-dark-mode-only:target td.value {
+  color: #e6edf3;
+}
+
+tr {
+  transform: translateX(-200%);
+  animation: slideIn 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.bar-cell {
+  width: 120px;
+  padding: 0.25em 0.5em 0.25em 0.25em;
+}
+
+.bar-bg {
+  background-color: #eaeef2;
+  border-radius: 4px;
+  height: 8px;
+  overflow: hidden;
+}
+
+#gh-dark-mode-only:target .bar-bg {
+  background-color: rgba(110, 118, 129, 0.3);
+}
+
+.bar-fill {
+  height: 8px;
+  border-radius: 4px;
+  background-color: #0969da;
+}
+
+#gh-dark-mode-only:target .bar-fill {
+  background-color: #00d9ff;
+}
+
+.octicon {
+  fill: #57606a;
+  margin-right: 0.6ch;
+  vertical-align: middle;
+}
+
+#gh-dark-mode-only:target .octicon {
+  fill: #8b949e;
+}
+
+@keyframes slideIn {
+  to {
+    transform: translateX(0);
+  }
+}
+</style>
+<g>
+<rect x="5" y="5" id="background" />
+<rect x="5" y="5" width="440" height="4" rx="2" id="accent-top" />
+<g>
+<foreignObject x="21" y="20" width="408" height="218">
+<div xmlns="http://www.w3.org/1999/xhtml">
+
+<table>
+<thead><tr style="transform: translateX(0);">
+<th colspan="2"><svg class="octicon" viewBox="0 0 16 16" xmlns="http://www.w3.org/2000/svg" width="14" height="14"><path fill-rule="evenodd" d="M1.679 7.932c.412-.621 1.242-1.75 2.366-2.717C5.175 4.242 6.527 3.5 8 3.5c1.473 0 2.824.742 3.955 1.715 1.124.967 1.954 2.096 2.366 2.717a.119.119 0 010 .136c-.412.621-1.242 1.75-2.366 2.717C10.825 11.758 9.473 12.5 8 12.5c-1.473 0-2.824-.742-3.955-1.715C2.92 9.818 2.09 8.69 1.679 8.068a.119.119 0 010-.136zM8 2c-1.981 0-3.67.992-4.933 2.078C1.797 5.169.88 6.423.43 7.1a1.619 1.619 0 000 1.798c.45.678 1.367 1.932 2.637 3.024C4.329 13.008 6.019 14 8 14c1.981 0 3.67-.992 4.933-2.078 1.27-1.091 2.187-2.345 2.637-3.023a1.619 1.619 0 000-1.798c-.45-.678-1.367-1.932-2.637-3.023C11.671 2.992 9.981 2 8 2zm0 8a2 2 0 100-4 2 2 0 000 4z"></path></svg>Contribution History</th>
+<th class="right">Total: {{ total_contributions }}</th>
+</tr></thead>
+<tbody>
+
+{{ contrib_rows }}
+
+</tbody>
+</table>
+
+</div>
+</foreignObject>
+</g>
+</g>
+</svg>

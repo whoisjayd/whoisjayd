@@ -51,18 +51,21 @@ class Queries(object):
             result = await r_async.json()
             if result is not None:
                 return result
-        except:
-            print("aiohttp failed for GraphQL query")
+        except Exception as e:
+            print(f"aiohttp failed for GraphQL query: {e}")
             # Fall back on non-async requests
-            async with self.semaphore:
-                r_requests = requests.post(
-                    "https://api.github.com/graphql",
-                    headers=headers,
-                    json={"query": generated_query},
-                )
-                result = r_requests.json()
-                if result is not None:
-                    return result
+            try:
+                async with self.semaphore:
+                    r_requests = requests.post(
+                        "https://api.github.com/graphql",
+                        headers=headers,
+                        json={"query": generated_query},
+                    )
+                    result = r_requests.json()
+                    if result is not None:
+                        return result
+            except Exception as e2:
+                print(f"requests fallback also failed for GraphQL query: {e2}")
         return dict()
 
     async def query_rest(self, path: str, params: Optional[Dict] = None) -> Dict:
@@ -89,7 +92,6 @@ class Queries(object):
                         params=tuple(params.items()),
                     )
                 if r_async.status == 202:
-                    # print(f"{path} returned 202. Retrying...")
                     print(f"A path returned 202. Retrying...")
                     await asyncio.sleep(2)
                     continue
@@ -97,10 +99,10 @@ class Queries(object):
                 result = await r_async.json()
                 if result is not None:
                     return result
-            except:
-                print("aiohttp failed for rest query")
+            except Exception as e:
+                print(f"aiohttp failed for REST query: {e}")
                 # Fall back on non-async requests
-                async with self.semaphore:
+                try:
                     r_requests = requests.get(
                         f"https://api.github.com/{path}",
                         headers=headers,
@@ -112,6 +114,8 @@ class Queries(object):
                         continue
                     elif r_requests.status_code == 200:
                         return r_requests.json()
+                except Exception as e2:
+                    print(f"requests fallback also failed for REST query: {e2}")
         # print(f"There were too many 202s. Data for {path} will be incomplete.")
         print("There were too many 202s. Data for this repository will be incomplete.")
         return dict()
@@ -244,6 +248,23 @@ query {{
 }}
 """
 
+    @staticmethod
+    def profile_info() -> str:
+        """
+        :return: GraphQL query to get profile-level statistics
+        """
+        return """
+query {
+  viewer {
+    followers { totalCount }
+    following { totalCount }
+    createdAt
+    pullRequests { totalCount }
+    issues { totalCount }
+  }
+}
+"""
+
 
 class Stats(object):
     """
@@ -273,6 +294,13 @@ class Stats(object):
         self._repos: Optional[Set[str]] = None
         self._lines_changed: Optional[Tuple[int, int]] = None
         self._views: Optional[int] = None
+        self._pull_requests: Optional[int] = None
+        self._issues_count: Optional[int] = None
+        self._followers: Optional[int] = None
+        self._following: Optional[int] = None
+        self._joined_at: Optional[str] = None
+        self._contribs_by_year: Optional[Dict[str, int]] = None
+        self._top_repos: Optional[List[Dict]] = None
 
     async def to_str(self) -> str:
         """
@@ -292,6 +320,11 @@ Lines of code added: {lines_changed[0]:,}
 Lines of code deleted: {lines_changed[1]:,}
 Lines of code changed: {lines_changed[0] + lines_changed[1]:,}
 Project page views: {await self.views:,}
+Followers: {await self.followers:,}
+Following: {await self.following:,}
+Pull Requests: {await self.pull_requests:,}
+Issues Opened: {await self.issues_count:,}
+Member Since: {await self.joined_at}
 Languages:
   - {formatted_languages}"""
 
@@ -305,6 +338,7 @@ Languages:
         self._repos = set()
 
         exclude_langs_lower = {x.lower() for x in self._exclude_langs}
+        repos_data: List[Dict] = []
 
         next_owned = None
         next_contrib = None
@@ -337,26 +371,32 @@ Languages:
             if not self._ignore_forked_repos:
                 repos += contrib_repos.get("nodes", [])
 
+            languages = await self.languages
             for repo in repos:
                 if repo is None:
                     continue
-                name = repo.get("nameWithOwner")
-                if name in self._repos or name in self._exclude_repos:
+                repo_name = repo.get("nameWithOwner")
+                if repo_name in self._repos or repo_name in self._exclude_repos:
                     continue
-                self._repos.add(name)
-                self._stargazers += repo.get("stargazers").get("totalCount", 0)
+                self._repos.add(repo_name)
+                repo_stars = repo.get("stargazers", {}).get("totalCount", 0)
+                self._stargazers += repo_stars
                 self._forks += repo.get("forkCount", 0)
+                repos_data.append({
+                    "name": repo_name,
+                    "stars": repo_stars,
+                    "forks": repo.get("forkCount", 0),
+                })
 
                 for lang in repo.get("languages", {}).get("edges", []):
-                    name = lang.get("node", {}).get("name", "Other")
-                    languages = await self.languages
-                    if name.lower() in exclude_langs_lower:
+                    lang_name = lang.get("node", {}).get("name", "Other")
+                    if lang_name.lower() in exclude_langs_lower:
                         continue
-                    if name in languages:
-                        languages[name]["size"] += lang.get("size", 0)
-                        languages[name]["occurrences"] += 1
+                    if lang_name in languages:
+                        languages[lang_name]["size"] += lang.get("size", 0)
+                        languages[lang_name]["occurrences"] += 1
                     else:
-                        languages[name] = {
+                        languages[lang_name] = {
                             "size": lang.get("size", 0),
                             "occurrences": 1,
                             "color": lang.get("node", {}).get("color"),
@@ -379,6 +419,9 @@ Languages:
         langs_total = sum([v.get("size", 0) for v in self._languages.values()])
         for k, v in self._languages.items():
             v["prop"] = 100 * (v.get("size", 0) / langs_total)
+
+        repos_data.sort(key=lambda r: r["stars"], reverse=True)
+        self._top_repos = repos_data[:5]
 
     @property
     async def name(self) -> str:
@@ -455,23 +498,24 @@ Languages:
             return self._total_contributions
 
         self._total_contributions = 0
-        years = (
+        self._contribs_by_year = {}
+        years_list = (
             (await self.queries.query(Queries.contrib_years()))
             .get("data", {})
             .get("viewer", {})
             .get("contributionsCollection", {})
             .get("contributionYears", [])
         )
-        by_year = (
-            (await self.queries.query(Queries.all_contribs(years)))
+        by_year_data = (
+            (await self.queries.query(Queries.all_contribs(years_list)))
             .get("data", {})
             .get("viewer", {})
-            .values()
         )
-        for year in by_year:
-            self._total_contributions += year.get("contributionCalendar", {}).get(
-                "totalContributions", 0
-            )
+        for key, year_data in by_year_data.items():
+            count = year_data.get("contributionCalendar", {}).get("totalContributions", 0)
+            self._total_contributions += count
+            year = key.replace("year", "")
+            self._contribs_by_year[year] = count
         return cast(int, self._total_contributions)
 
     @property
@@ -519,6 +563,96 @@ Languages:
 
         self._views = total
         return total
+
+    async def get_profile_info(self) -> None:
+        """
+        Fetch profile-level stats: followers, following, PRs, issues, join date
+        """
+        result = await self.queries.query(Queries.profile_info())
+        viewer = result.get("data", {}).get("viewer", {})
+        self._followers = viewer.get("followers", {}).get("totalCount", 0)
+        self._following = viewer.get("following", {}).get("totalCount", 0)
+        self._pull_requests = viewer.get("pullRequests", {}).get("totalCount", 0)
+        self._issues_count = viewer.get("issues", {}).get("totalCount", 0)
+        raw_date = viewer.get("createdAt", "")
+        self._joined_at = raw_date[:4] if raw_date else "N/A"
+
+    @property
+    async def followers(self) -> int:
+        """
+        :return: number of followers the user has
+        """
+        if self._followers is not None:
+            return self._followers
+        await self.get_profile_info()
+        assert self._followers is not None
+        return self._followers
+
+    @property
+    async def following(self) -> int:
+        """
+        :return: number of users this user is following
+        """
+        if self._following is not None:
+            return self._following
+        await self.get_profile_info()
+        assert self._following is not None
+        return self._following
+
+    @property
+    async def pull_requests(self) -> int:
+        """
+        :return: total number of pull requests opened by the user
+        """
+        if self._pull_requests is not None:
+            return self._pull_requests
+        await self.get_profile_info()
+        assert self._pull_requests is not None
+        return self._pull_requests
+
+    @property
+    async def issues_count(self) -> int:
+        """
+        :return: total number of issues opened by the user
+        """
+        if self._issues_count is not None:
+            return self._issues_count
+        await self.get_profile_info()
+        assert self._issues_count is not None
+        return self._issues_count
+
+    @property
+    async def joined_at(self) -> str:
+        """
+        :return: year the user joined GitHub
+        """
+        if self._joined_at is not None:
+            return self._joined_at
+        await self.get_profile_info()
+        assert self._joined_at is not None
+        return self._joined_at
+
+    @property
+    async def contribs_by_year(self) -> Dict[str, int]:
+        """
+        :return: dict mapping year string to contribution count for that year
+        """
+        if self._contribs_by_year is not None:
+            return self._contribs_by_year
+        await self.total_contributions
+        assert self._contribs_by_year is not None
+        return self._contribs_by_year
+
+    @property
+    async def top_repos(self) -> List[Dict]:
+        """
+        :return: list of top repos by star count (up to 5), each with name/stars/forks
+        """
+        if self._top_repos is not None:
+            return self._top_repos
+        await self.get_stats()
+        assert self._top_repos is not None
+        return self._top_repos
 
 
 ###############################################################################

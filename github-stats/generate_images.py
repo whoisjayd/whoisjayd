@@ -2,7 +2,6 @@
 
 import asyncio
 import os
-import re
 
 import aiohttp
 
@@ -35,14 +34,16 @@ async def generate_overview(s: Stats) -> None:
     with open("templates/overview.svg", "r") as f:
         output = f.read()
 
-    output = re.sub("{{ name }}", await s.name, output)
-    output = re.sub("{{ stars }}", f"{await s.stargazers:,}", output)
-    output = re.sub("{{ forks }}", f"{await s.forks:,}", output)
-    output = re.sub("{{ contributions }}", f"{await s.total_contributions:,}", output)
-    changed = (await s.lines_changed)[0] + (await s.lines_changed)[1]
-    output = re.sub("{{ lines_changed }}", f"{changed:,}", output)
-    output = re.sub("{{ views }}", f"{await s.views:,}", output)
-    output = re.sub("{{ repos }}", f"{len(await s.repos):,}", output)
+    output = output.replace("{{ name }}", await s.name)
+    output = output.replace("{{ stars }}", f"{await s.stargazers:,}")
+    output = output.replace("{{ forks }}", f"{await s.forks:,}")
+    output = output.replace("{{ contributions }}", f"{await s.total_contributions:,}")
+    lines_changed = await s.lines_changed
+    output = output.replace("{{ lines_added }}", f"{lines_changed[0]:,}")
+    output = output.replace("{{ lines_deleted }}", f"{lines_changed[1]:,}")
+    output = output.replace("{{ lines_changed }}", f"{lines_changed[0] + lines_changed[1]:,}")
+    output = output.replace("{{ views }}", f"{await s.views:,}")
+    output = output.replace("{{ repos }}", f"{len(await s.repos):,}")
 
     generate_output_folder()
     with open("generated/overview.svg", "w") as f:
@@ -82,11 +83,118 @@ fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
 
 """
 
-    output = re.sub(r"{{ progress }}", progress, output)
-    output = re.sub(r"{{ lang_list }}", lang_list, output)
+    output = output.replace("{{ progress }}", progress)
+    output = output.replace("{{ lang_list }}", lang_list)
 
     generate_output_folder()
     with open("generated/languages.svg", "w") as f:
+        f.write(output)
+
+
+async def generate_profile(s: Stats) -> None:
+    """
+    Generate an SVG badge with profile-level statistics
+    :param s: Represents user's GitHub statistics
+    """
+    with open("templates/profile.svg", "r") as f:
+        output = f.read()
+
+    output = output.replace("{{ name }}", await s.name)
+    output = output.replace("{{ followers }}", f"{await s.followers:,}")
+    output = output.replace("{{ following }}", f"{await s.following:,}")
+    output = output.replace("{{ pull_requests }}", f"{await s.pull_requests:,}")
+    output = output.replace("{{ issues }}", f"{await s.issues_count:,}")
+    output = output.replace("{{ joined }}", await s.joined_at)
+
+    generate_output_folder()
+    with open("generated/profile.svg", "w") as f:
+        f.write(output)
+
+
+async def generate_contributions(s: Stats) -> None:
+    """
+    Generate an SVG badge with yearly contribution history
+    :param s: Represents user's GitHub statistics
+    """
+    with open("templates/contributions.svg", "r") as f:
+        output = f.read()
+
+    contribs = await s.contribs_by_year
+    # Sort by year descending, show most recent 7
+    sorted_years = sorted(contribs.items(), key=lambda t: t[0], reverse=True)[:7]
+
+    # Compute max for the relative bar widths
+    max_count = max((v for _, v in sorted_years), default=1) or 1
+
+    rows = ""
+    for i, (year, count) in enumerate(sorted_years):
+        pct = 100 * count / max_count
+        rows += f"""
+<tr style="animation-delay: {i * 80}ms">
+  <td>{year}</td>
+  <td style="width:120px; padding: 0.25em 0.5em 0.25em 0.25em;">
+    <div style="background-color:#eaeef2;border-radius:4px;height:8px;overflow:hidden;">
+      <div style="width:{pct:.1f}%;height:8px;border-radius:4px;background-color:#0969da;"></div>
+    </div>
+  </td>
+  <td class="value">{count:,}</td>
+</tr>
+"""
+
+    output = output.replace("{{ contrib_rows }}", rows)
+    output = output.replace("{{ total_contributions }}", f"{await s.total_contributions:,}")
+
+    generate_output_folder()
+    with open("generated/contributions.svg", "w") as f:
+        f.write(output)
+
+
+async def generate_top_repos(s: Stats) -> None:
+    """
+    Generate an SVG badge showing top repositories by star count
+    :param s: Represents user's GitHub statistics
+    """
+    with open("templates/top-repos.svg", "r") as f:
+        output = f.read()
+
+    top = await s.top_repos
+    rows = ""
+    for i, repo in enumerate(top):
+        name = repo["name"]
+        stars = repo["stars"]
+        forks = repo["forks"]
+        rows += f"""
+<tr style="animation-delay: {i * 80}ms">
+  <td class="repo-name">{name}</td>
+  <td class="repo-meta">
+    <svg class="octicon star-icon" viewBox="0 0 16 16" width="12" height="12"
+    xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 .25a.75.75 0
+    01.673.418l1.882 3.815 4.21.612a.75.75 0 01.416 1.279l-3.046 2.97.719
+    4.192a.75.75 0 01-1.088.791L8 12.347l-3.766 1.98a.75.75 0
+    01-1.088-.79l.72-4.194L.818 6.374a.75.75 0 01.416-1.28l4.21-.611L7.327.668A.75.75
+    0 018 .25z"></path></svg>
+    {stars:,}
+    &#160;
+    <svg class="octicon" viewBox="0 0 16 16" width="12" height="12"
+    xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M5
+    3.25a.75.75 0 11-1.5 0 .75.75 0 011.5 0zm0 2.122a2.25 2.25 0
+    10-1.5 0v.878A2.25 2.25 0 005.75 8.5h1.5v2.128a2.251 2.251 0
+    101.5 0V8.5h1.5a2.25 2.25 0
+    002.25-2.25v-.878a2.25 2.25 0
+    10-1.5 0v.878a.75.75 0
+    01-.75.75h-4.5A.75.75 0 015
+    6.25v-.878zm3.75 7.378a.75.75 0
+    11-1.5 0 .75.75 0 011.5
+    0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg>
+    {forks:,}
+  </td>
+</tr>
+"""
+
+    output = output.replace("{{ repo_rows }}", rows)
+
+    generate_output_folder()
+    with open("generated/top-repos.svg", "w") as f:
         f.write(output)
 
 
@@ -129,7 +237,13 @@ async def main() -> None:
             exclude_langs=excluded_langs,
             ignore_forked_repos=ignore_forked_repos,
         )
-        await asyncio.gather(generate_languages(s), generate_overview(s))
+        await asyncio.gather(
+            generate_languages(s),
+            generate_overview(s),
+            generate_profile(s),
+            generate_contributions(s),
+            generate_top_repos(s),
+        )
 
 
 if __name__ == "__main__":
