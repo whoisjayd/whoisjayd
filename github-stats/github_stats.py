@@ -361,13 +361,14 @@ Languages:
             )
             raw_results = raw_results if raw_results is not None else {}
 
-            profile_name = raw_results.get("data", {}).get("viewer", {}).get("name", None)
+            viewer = raw_results.get("data", {}).get("viewer", {})
+            viewer_login = viewer.get("login")
+            if viewer_login:
+                self.username = viewer_login
+
+            profile_name = viewer.get("name", None)
             if profile_name is None:
-                profile_name = (
-                    raw_results.get("data", {})
-                    .get("viewer", {})
-                    .get("login", "No Name")
-                )
+                profile_name = viewer.get("login", "No Name")
 
             contrib_repos = (
                 raw_results.get("data", {})
