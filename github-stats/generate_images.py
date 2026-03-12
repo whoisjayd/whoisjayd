@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+from html import escape
 
 import aiohttp
 
@@ -21,6 +22,13 @@ def generate_output_folder() -> None:
         os.mkdir("generated")
 
 
+def escape_text(value: str) -> str:
+    """
+    Escape dynamic text before embedding it into SVG/XHTML templates.
+    """
+    return escape(value, quote=False)
+
+
 ################################################################################
 # Individual Image Generation Functions
 ################################################################################
@@ -34,14 +42,13 @@ async def generate_overview(s: Stats) -> None:
     with open("templates/overview.svg", "r") as f:
         output = f.read()
 
-    output = output.replace("{{ name }}", await s.name)
+    output = output.replace("{{ name }}", escape_text(await s.name))
     output = output.replace("{{ stars }}", f"{await s.stargazers:,}")
     output = output.replace("{{ forks }}", f"{await s.forks:,}")
     output = output.replace("{{ contributions }}", f"{await s.total_contributions:,}")
     lines_changed = await s.lines_changed
     output = output.replace("{{ lines_added }}", f"{lines_changed[0]:,}")
     output = output.replace("{{ lines_deleted }}", f"{lines_changed[1]:,}")
-    output = output.replace("{{ lines_changed }}", f"{lines_changed[0] + lines_changed[1]:,}")
     output = output.replace("{{ views }}", f"{await s.views:,}")
     output = output.replace("{{ repos }}", f"{len(await s.repos):,}")
 
@@ -77,7 +84,7 @@ async def generate_languages(s: Stats) -> None:
 <svg xmlns="http://www.w3.org/2000/svg" class="octicon" style="fill:{color};"
 viewBox="0 0 16 16" version="1.1" width="16" height="16"><path
 fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
-<span class="lang">{lang}</span>
+<span class="lang">{escape_text(lang)}</span>
 <span class="percent">{data.get("prop", 0):0.2f}%</span>
 </li>
 
@@ -99,12 +106,12 @@ async def generate_profile(s: Stats) -> None:
     with open("templates/profile.svg", "r") as f:
         output = f.read()
 
-    output = output.replace("{{ name }}", await s.name)
+    output = output.replace("{{ name }}", escape_text(await s.name))
     output = output.replace("{{ followers }}", f"{await s.followers:,}")
     output = output.replace("{{ following }}", f"{await s.following:,}")
     output = output.replace("{{ pull_requests }}", f"{await s.pull_requests:,}")
     output = output.replace("{{ issues }}", f"{await s.issues_count:,}")
-    output = output.replace("{{ joined }}", await s.joined_at)
+    output = output.replace("{{ joined }}", escape_text(await s.joined_at))
 
     generate_output_folder()
     with open("generated/profile.svg", "w") as f:
@@ -124,17 +131,17 @@ async def generate_contributions(s: Stats) -> None:
     sorted_years = sorted(contribs.items(), key=lambda t: t[0], reverse=True)[:7]
 
     # Compute max for the relative bar widths
-    max_count = max((v for _, v in sorted_years), default=1) or 1
+    max_count = max(1, max((v for _, v in sorted_years), default=0))
 
     rows = ""
     for i, (year, count) in enumerate(sorted_years):
         pct = 100 * count / max_count
         rows += f"""
 <tr style="animation-delay: {i * 80}ms">
-  <td>{year}</td>
-  <td style="width:120px; padding: 0.25em 0.5em 0.25em 0.25em;">
-    <div style="background-color:#eaeef2;border-radius:4px;height:8px;overflow:hidden;">
-      <div style="width:{pct:.1f}%;height:8px;border-radius:4px;background-color:#0969da;"></div>
+  <td>{escape_text(year)}</td>
+  <td class="bar-cell">
+    <div class="bar-bg">
+      <div class="bar-fill" style="width:{pct:.1f}%;"></div>
     </div>
   </td>
   <td class="value">{count:,}</td>
@@ -160,7 +167,7 @@ async def generate_top_repos(s: Stats) -> None:
     top = await s.top_repos
     rows = ""
     for i, repo in enumerate(top):
-        name = repo["name"]
+        name = escape_text(str(repo["name"]))
         stars = repo["stars"]
         forks = repo["forks"]
         rows += f"""

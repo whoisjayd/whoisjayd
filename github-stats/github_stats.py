@@ -2,6 +2,7 @@
 
 import asyncio
 import os
+from datetime import datetime
 from typing import Dict, List, Optional, Set, Tuple, Any, cast
 
 import aiohttp
@@ -56,7 +57,8 @@ class Queries(object):
             # Fall back on non-async requests
             try:
                 async with self.semaphore:
-                    r_requests = requests.post(
+                    r_requests = await asyncio.to_thread(
+                        requests.post,
                         "https://api.github.com/graphql",
                         headers=headers,
                         json={"query": generated_query},
@@ -103,11 +105,13 @@ class Queries(object):
                 print(f"aiohttp failed for REST query: {e}")
                 # Fall back on non-async requests
                 try:
-                    r_requests = requests.get(
-                        f"https://api.github.com/{path}",
-                        headers=headers,
-                        params=tuple(params.items()),
-                    )
+                    async with self.semaphore:
+                        r_requests = await asyncio.to_thread(
+                            requests.get,
+                            f"https://api.github.com/{path}",
+                            headers=headers,
+                            params=tuple(params.items()),
+                        )
                     if r_requests.status_code == 202:
                         print(f"A path returned 202. Retrying...")
                         await asyncio.sleep(2)
@@ -301,6 +305,12 @@ class Stats(object):
         self._joined_at: Optional[str] = None
         self._contribs_by_year: Optional[Dict[str, int]] = None
         self._top_repos: Optional[List[Dict]] = None
+        self._stats_loaded = False
+        self._profile_info_loaded = False
+        self._total_contributions_loaded = False
+        self._stats_lock = asyncio.Lock()
+        self._profile_info_lock = asyncio.Lock()
+        self._total_contributions_lock = asyncio.Lock()
 
     async def to_str(self) -> str:
         """
@@ -332,10 +342,11 @@ Languages:
         """
         Get lots of summary statistics using one big query. Sets many attributes
         """
-        self._stargazers = 0
-        self._forks = 0
-        self._languages = dict()
-        self._repos = set()
+        stargazers = 0
+        forks = 0
+        languages: Dict[str, Any] = dict()
+        repos_seen: Set[str] = set()
+        profile_name: Optional[str] = None
 
         exclude_langs_lower = {x.lower() for x in self._exclude_langs}
         repos_data: List[Dict] = []
@@ -350,9 +361,9 @@ Languages:
             )
             raw_results = raw_results if raw_results is not None else {}
 
-            self._name = raw_results.get("data", {}).get("viewer", {}).get("name", None)
-            if self._name is None:
-                self._name = (
+            profile_name = raw_results.get("data", {}).get("viewer", {}).get("name", None)
+            if profile_name is None:
+                profile_name = (
                     raw_results.get("data", {})
                     .get("viewer", {})
                     .get("login", "No Name")
@@ -371,17 +382,16 @@ Languages:
             if not self._ignore_forked_repos:
                 repos += contrib_repos.get("nodes", [])
 
-            languages = await self.languages
             for repo in repos:
                 if repo is None:
                     continue
                 repo_name = repo.get("nameWithOwner")
-                if repo_name in self._repos or repo_name in self._exclude_repos:
+                if repo_name in repos_seen or repo_name in self._exclude_repos:
                     continue
-                self._repos.add(repo_name)
+                repos_seen.add(repo_name)
                 repo_stars = repo.get("stargazers", {}).get("totalCount", 0)
-                self._stargazers += repo_stars
-                self._forks += repo.get("forkCount", 0)
+                stargazers += repo_stars
+                forks += repo.get("forkCount", 0)
                 repos_data.append({
                     "name": repo_name,
                     "stars": repo_stars,
@@ -416,21 +426,56 @@ Languages:
 
         # TODO: Improve languages to scale by number of contributions to
         #       specific filetypes
-        langs_total = sum([v.get("size", 0) for v in self._languages.values()])
-        for k, v in self._languages.items():
-            v["prop"] = 100 * (v.get("size", 0) / langs_total)
+        langs_total = sum(v.get("size", 0) for v in languages.values())
+        if langs_total == 0:
+            for v in languages.values():
+                v["prop"] = 0
+        else:
+            for v in languages.values():
+                v["prop"] = 100 * (v.get("size", 0) / langs_total)
 
         repos_data.sort(key=lambda r: r["stars"], reverse=True)
+        self._name = profile_name
+        self._stargazers = stargazers
+        self._forks = forks
+        self._languages = languages
+        self._repos = repos_seen
         self._top_repos = repos_data[:5]
+        self._stats_loaded = True
+
+    async def _ensure_stats_loaded(self) -> None:
+        if self._stats_loaded:
+            return
+        async with self._stats_lock:
+            if self._stats_loaded:
+                return
+            await self.get_stats()
+
+    async def _ensure_profile_info_loaded(self) -> None:
+        if self._profile_info_loaded:
+            return
+        async with self._profile_info_lock:
+            if self._profile_info_loaded:
+                return
+            await self.get_profile_info()
+
+    async def _ensure_total_contributions_loaded(self) -> None:
+        if self._total_contributions_loaded:
+            return
+        async with self._total_contributions_lock:
+            if self._total_contributions_loaded:
+                return
+            await self._load_total_contributions()
 
     @property
     async def name(self) -> str:
         """
         :return: GitHub user's name (e.g., Jacob Strieb)
         """
-        if self._name is not None:
+        if self._stats_loaded:
+            assert self._name is not None
             return self._name
-        await self.get_stats()
+        await self._ensure_stats_loaded()
         assert self._name is not None
         return self._name
 
@@ -439,9 +484,10 @@ Languages:
         """
         :return: total number of stargazers on user's repos
         """
-        if self._stargazers is not None:
+        if self._stats_loaded:
+            assert self._stargazers is not None
             return self._stargazers
-        await self.get_stats()
+        await self._ensure_stats_loaded()
         assert self._stargazers is not None
         return self._stargazers
 
@@ -450,9 +496,10 @@ Languages:
         """
         :return: total number of forks on user's repos
         """
-        if self._forks is not None:
+        if self._stats_loaded:
+            assert self._forks is not None
             return self._forks
-        await self.get_stats()
+        await self._ensure_stats_loaded()
         assert self._forks is not None
         return self._forks
 
@@ -461,9 +508,10 @@ Languages:
         """
         :return: summary of languages used by the user
         """
-        if self._languages is not None:
+        if self._stats_loaded:
+            assert self._languages is not None
             return self._languages
-        await self.get_stats()
+        await self._ensure_stats_loaded()
         assert self._languages is not None
         return self._languages
 
@@ -472,10 +520,8 @@ Languages:
         """
         :return: summary of languages used by the user, with proportional usage
         """
-        if self._languages is None:
-            await self.get_stats()
-            assert self._languages is not None
-
+        await self._ensure_stats_loaded()
+        assert self._languages is not None
         return {k: v.get("prop", 0) for (k, v) in self._languages.items()}
 
     @property
@@ -483,22 +529,17 @@ Languages:
         """
         :return: list of names of user's repos
         """
-        if self._repos is not None:
+        if self._stats_loaded:
+            assert self._repos is not None
             return self._repos
-        await self.get_stats()
+        await self._ensure_stats_loaded()
         assert self._repos is not None
         return self._repos
 
-    @property
-    async def total_contributions(self) -> int:
+    async def _load_total_contributions(self) -> None:
         """
-        :return: count of user's total contributions as defined by GitHub
+        Load the user's total contribution count and yearly breakdown.
         """
-        if self._total_contributions is not None:
-            return self._total_contributions
-
-        self._total_contributions = 0
-        self._contribs_by_year = {}
         years_list = (
             (await self.queries.query(Queries.contrib_years()))
             .get("data", {})
@@ -506,6 +547,8 @@ Languages:
             .get("contributionsCollection", {})
             .get("contributionYears", [])
         )
+        total_contributions = 0
+        contribs_by_year: Dict[str, int] = {}
         by_year_data = (
             (await self.queries.query(Queries.all_contribs(years_list)))
             .get("data", {})
@@ -513,9 +556,23 @@ Languages:
         )
         for key, year_data in by_year_data.items():
             count = year_data.get("contributionCalendar", {}).get("totalContributions", 0)
-            self._total_contributions += count
+            total_contributions += count
             year = key.replace("year", "")
-            self._contribs_by_year[year] = count
+            contribs_by_year[year] = count
+        self._total_contributions = total_contributions
+        self._contribs_by_year = contribs_by_year
+        self._total_contributions_loaded = True
+
+    @property
+    async def total_contributions(self) -> int:
+        """
+        :return: count of user's total contributions as defined by GitHub
+        """
+        if self._total_contributions_loaded:
+            assert self._total_contributions is not None
+            return self._total_contributions
+        await self._ensure_total_contributions_loaded()
+        assert self._total_contributions is not None
         return cast(int, self._total_contributions)
 
     @property
@@ -570,21 +627,36 @@ Languages:
         """
         result = await self.queries.query(Queries.profile_info())
         viewer = result.get("data", {}).get("viewer", {})
-        self._followers = viewer.get("followers", {}).get("totalCount", 0)
-        self._following = viewer.get("following", {}).get("totalCount", 0)
-        self._pull_requests = viewer.get("pullRequests", {}).get("totalCount", 0)
-        self._issues_count = viewer.get("issues", {}).get("totalCount", 0)
+        followers = viewer.get("followers", {}).get("totalCount", 0)
+        following = viewer.get("following", {}).get("totalCount", 0)
+        pull_requests = viewer.get("pullRequests", {}).get("totalCount", 0)
+        issues_count = viewer.get("issues", {}).get("totalCount", 0)
         raw_date = viewer.get("createdAt", "")
-        self._joined_at = raw_date[:4] if raw_date else "N/A"
+        joined_at = "N/A"
+        if raw_date:
+            try:
+                joined_at = datetime.fromisoformat(
+                    raw_date.replace("Z", "+00:00")
+                ).strftime("%Y")
+            except ValueError:
+                joined_at = raw_date[:4]
+
+        self._followers = followers
+        self._following = following
+        self._pull_requests = pull_requests
+        self._issues_count = issues_count
+        self._joined_at = joined_at
+        self._profile_info_loaded = True
 
     @property
     async def followers(self) -> int:
         """
         :return: number of followers the user has
         """
-        if self._followers is not None:
+        if self._profile_info_loaded:
+            assert self._followers is not None
             return self._followers
-        await self.get_profile_info()
+        await self._ensure_profile_info_loaded()
         assert self._followers is not None
         return self._followers
 
@@ -593,9 +665,10 @@ Languages:
         """
         :return: number of users this user is following
         """
-        if self._following is not None:
+        if self._profile_info_loaded:
+            assert self._following is not None
             return self._following
-        await self.get_profile_info()
+        await self._ensure_profile_info_loaded()
         assert self._following is not None
         return self._following
 
@@ -604,9 +677,10 @@ Languages:
         """
         :return: total number of pull requests opened by the user
         """
-        if self._pull_requests is not None:
+        if self._profile_info_loaded:
+            assert self._pull_requests is not None
             return self._pull_requests
-        await self.get_profile_info()
+        await self._ensure_profile_info_loaded()
         assert self._pull_requests is not None
         return self._pull_requests
 
@@ -615,9 +689,10 @@ Languages:
         """
         :return: total number of issues opened by the user
         """
-        if self._issues_count is not None:
+        if self._profile_info_loaded:
+            assert self._issues_count is not None
             return self._issues_count
-        await self.get_profile_info()
+        await self._ensure_profile_info_loaded()
         assert self._issues_count is not None
         return self._issues_count
 
@@ -626,9 +701,10 @@ Languages:
         """
         :return: year the user joined GitHub
         """
-        if self._joined_at is not None:
+        if self._profile_info_loaded:
+            assert self._joined_at is not None
             return self._joined_at
-        await self.get_profile_info()
+        await self._ensure_profile_info_loaded()
         assert self._joined_at is not None
         return self._joined_at
 
@@ -637,9 +713,10 @@ Languages:
         """
         :return: dict mapping year string to contribution count for that year
         """
-        if self._contribs_by_year is not None:
+        if self._total_contributions_loaded:
+            assert self._contribs_by_year is not None
             return self._contribs_by_year
-        await self.total_contributions
+        await self._ensure_total_contributions_loaded()
         assert self._contribs_by_year is not None
         return self._contribs_by_year
 
@@ -648,9 +725,10 @@ Languages:
         """
         :return: list of top repos by star count (up to 5), each with name/stars/forks
         """
-        if self._top_repos is not None:
+        if self._stats_loaded:
+            assert self._top_repos is not None
             return self._top_repos
-        await self.get_stats()
+        await self._ensure_stats_loaded()
         assert self._top_repos is not None
         return self._top_repos
 
