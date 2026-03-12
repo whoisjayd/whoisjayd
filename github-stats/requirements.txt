@@ -1,2 +1,2 @@
-requests
-aiohttp
+aiohttp>=3.13.3,<4.0
+requests>=2.32.0,<3.0

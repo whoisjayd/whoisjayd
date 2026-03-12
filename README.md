@@ -1,8 +1,16 @@
-I am Jaydeep Solanki, a 22-year-old student developer from India focused on backend systems and cloud. Exploring opportunities and ideas to build.
+Hey, I'm Jaydeep 👋
+
+Developer from India focused on backend systems and useful developer tools. Still a student and always learning.
+
+What I work on
+
+- **Backend engineering** — APIs, service design, async systems
+- **Open source** — small, practical contributions
+
+Explore my projects and the auto-generated stats below.
 
 <details>
-  <summary>Stats</summary>
-
+<summary>Stats</summary>
   <p>
     <a href="https://wakatime.com/@690b688d-373b-4fda-8b09-61da844c9526">
       <img src="https://wakatime.com/badge/user/690b688d-373b-4fda-8b09-61da844c9526.svg" alt="WakaTime badge">
@@ -11,7 +19,15 @@ I am Jaydeep Solanki, a 22-year-old student developer from India focused on back
   </p>
 
   <p>
-    <img src="github-stats/generated/overview.svg" width="48%" alt="GitHub overview stats">
-    <img src="github-stats/generated/languages.svg" width="48%" alt="Top languages">
-  </p>
+<img src="github-stats/generated/overview.svg" width="48%" alt="GitHub overview">
+<img src="github-stats/generated/languages.svg" width="48%" alt="Top languages">
+</p>
+  <p>
+<img src="github-stats/generated/profile.svg" width="48%" alt="GitHub profile">
+<img src="github-stats/generated/contributions.svg" width="48%" alt="Contribution history">
+</p>
+  <p>
+<img src="github-stats/generated/top-repos.svg" width="48%" alt="Top repositories">
+</p>
+
 </details>
