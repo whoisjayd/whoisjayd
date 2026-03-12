@@ -29,8 +29,18 @@ Explore my projects and the auto-generated stats below.
   <img src="github-stats/generated/top-repos.svg" width="49%" alt="Top repositories">
 </p>
 
-<p align="center">
-  <img src="github-stats/generated/languages.svg" width="99%" alt="Top languages">
-</p>
+**Top Languages**
+
+<!-- START_LANGUAGES -->
+| Language | Share | Language | Share |
+| --- | ---: | --- | ---: |
+| Python | 83.28% | TypeScript | 12.09% |
+| HTML | 2.22% | JavaScript | 0.85% |
+| C++ | 0.58% | CSS | 0.49% |
+| Makefile | 0.16% | MDX | 0.15% |
+| Dockerfile | 0.06% | Shell | 0.05% |
+| PLpgSQL | 0.05% | PowerShell | 0.02% |
+| Batchfile | 0.01% |  |  |
+<!-- END_LANGUAGES -->
 
 </details>

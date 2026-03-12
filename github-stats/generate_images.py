@@ -8,6 +8,10 @@ import aiohttp
 
 from github_stats import Stats
 
+LANGUAGES_SECTION_START = "<!-- START_LANGUAGES -->"
+LANGUAGES_SECTION_END = "<!-- END_LANGUAGES -->"
+README_PATH = os.path.join("..", "README.md")
+
 
 ################################################################################
 # Helper Functions
@@ -27,6 +31,56 @@ def escape_text(value: str) -> str:
     Escape dynamic text before embedding it into SVG/XHTML templates.
     """
     return escape(value, quote=False)
+
+
+def escape_markdown_table_text(value: str) -> str:
+    """
+    Escape text that will be placed inside a Markdown table cell.
+    """
+    return value.replace("|", "\\|").replace("\n", " ")
+
+
+def replace_between_markers(
+    content: str, start_marker: str, end_marker: str, replacement: str
+) -> str:
+    """
+    Replace the content between two README markers.
+    """
+    start = content.find(start_marker)
+    end = content.find(end_marker)
+    if start == -1 or end == -1 or start > end:
+        raise ValueError("Could not find README language section markers.")
+    end += len(end_marker)
+    return content[:start] + replacement + content[end:]
+
+
+def build_languages_table(sorted_languages) -> str:
+    """
+    Build a compact two-column Markdown table for the README.
+    """
+    if not sorted_languages:
+        return "_No language data available._"
+
+    lines = [
+        "| Language | Share | Language | Share |",
+        "| --- | ---: | --- | ---: |",
+    ]
+
+    for index in range(0, len(sorted_languages), 2):
+        pair = sorted_languages[index : index + 2]
+        cells = []
+        for lang, data in pair:
+            cells.extend(
+                [
+                    escape_markdown_table_text(lang),
+                    f"{data.get('prop', 0):0.2f}%",
+                ]
+            )
+        while len(cells) < 4:
+            cells.extend(["", ""])
+        lines.append(f"| {cells[0]} | {cells[1]} | {cells[2]} | {cells[3]} |")
+
+    return "\n".join(lines)
 
 
 ################################################################################
@@ -59,43 +113,28 @@ async def generate_overview(s: Stats) -> None:
 
 async def generate_languages(s: Stats) -> None:
     """
-    Generate an SVG badge with summary languages used
+    Generate the README language summary as a compact text table.
     :param s: Represents user's GitHub statistics
     """
-    with open("templates/languages.svg", "r") as f:
-        output = f.read()
-
-    progress = ""
-    lang_list = ""
     sorted_languages = sorted(
         (await s.languages).items(), reverse=True, key=lambda t: t[1].get("size")
     )
-    delay_between = 150
-    for i, (lang, data) in enumerate(sorted_languages):
-        color = data.get("color")
-        color = color if color is not None else "#000000"
-        progress += (
-            f'<span style="background-color: {color};'
-            f'width: {data.get("prop", 0):0.3f}%;" '
-            f'class="progress-item"></span>'
-        )
-        lang_list += f"""
-<li style="animation-delay: {i * delay_between}ms;">
-<svg xmlns="http://www.w3.org/2000/svg" class="octicon" style="fill:{color};"
-viewBox="0 0 16 16" version="1.1" width="16" height="16"><path
-fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8z"></path></svg>
-<span class="lang">{escape_text(lang)}</span>
-<span class="percent">{data.get("prop", 0):0.2f}%</span>
-</li>
+    table = build_languages_table(sorted_languages)
+    replacement = f"{LANGUAGES_SECTION_START}\n{table}\n{LANGUAGES_SECTION_END}"
 
-"""
+    with open(README_PATH, "r", encoding="utf-8") as f:
+        readme = f.read()
 
-    output = output.replace("{{ progress }}", progress)
-    output = output.replace("{{ lang_list }}", lang_list)
+    updated = replace_between_markers(
+        readme,
+        LANGUAGES_SECTION_START,
+        LANGUAGES_SECTION_END,
+        replacement,
+    )
 
-    generate_output_folder()
-    with open("generated/languages.svg", "w") as f:
-        f.write(output)
+    if updated != readme:
+        with open(README_PATH, "w", encoding="utf-8") as f:
+            f.write(updated)
 
 
 async def generate_profile(s: Stats) -> None:
