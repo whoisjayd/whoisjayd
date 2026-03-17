@@ -34,7 +34,7 @@ Explore my projects and the auto-generated stats below.
 <!-- START_LANGUAGES -->
 | Language | Share | Language | Share |
 | --- | ---: | --- | ---: |
-| Python | 83.67% | TypeScript | 11.80% |
+| Python | 83.70% | TypeScript | 11.78% |
 | HTML | 2.17% | JavaScript | 0.83% |
 | C++ | 0.56% | CSS | 0.47% |
 | Makefile | 0.16% | MDX | 0.15% |
