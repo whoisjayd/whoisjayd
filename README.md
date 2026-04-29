@@ -32,15 +32,7 @@ Explore my projects and the auto-generated stats below.
 **Top Languages**
 
 <!-- START_LANGUAGES -->
-| Language | Share | Language | Share |
-| --- | ---: | --- | ---: |
-| Python | 65.86% | TypeScript | 23.46% |
-| Go | 3.72% | HTML | 2.04% |
-| JavaScript | 1.77% | CSS | 1.61% |
-| MDX | 0.52% | C++ | 0.39% |
-| Shell | 0.29% | Makefile | 0.25% |
-| Dockerfile | 0.05% | PowerShell | 0.04% |
-| Batchfile | 0.01% |  |  |
+_No language data available._
 <!-- END_LANGUAGES -->
 
 </details>
