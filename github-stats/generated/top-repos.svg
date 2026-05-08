@@ -240,7 +240,7 @@ tr {
 </tr>
 
 <tr style="animation-delay: 320ms">
-  <td class="repo-name">whoisjayd/imdb-tmdb-movie-scraper</td>
+  <td class="repo-name">whoisjayd/control-my-home-bulb</td>
   <td class="repo-meta">
     <svg class="octicon star-icon" viewBox="0 0 16 16" width="12" height="12"
     xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M8 .25a.75.75 0
@@ -261,7 +261,7 @@ tr {
     6.25v-.878zm3.75 7.378a.75.75 0
     11-1.5 0 .75.75 0 011.5
     0zm3-8.75a.75.75 0 100-1.5.75.75 0 000 1.5z"></path></svg>
-    1
+    0
   </td>
 </tr>
 
