@@ -34,8 +34,8 @@ Explore my projects and the auto-generated stats below.
 <!-- START_LANGUAGES -->
 | Language | Share | Language | Share |
 | --- | ---: | --- | ---: |
-| Python | 83.76% | TypeScript | 10.11% |
-| Go | 1.51% | TeX | 1.49% |
+| Python | 83.74% | TypeScript | 10.11% |
+| Go | 1.52% | TeX | 1.49% |
 | HTML | 0.59% | JavaScript | 0.54% |
 | BibTeX Style | 0.52% | CSS | 0.44% |
 | Shell | 0.44% | MDX | 0.20% |
