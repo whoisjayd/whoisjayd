@@ -34,11 +34,11 @@ Explore my projects and the auto-generated stats below.
 <!-- START_LANGUAGES -->
 | Language | Share | Language | Share |
 | --- | ---: | --- | ---: |
-| Python | 69.13% | TypeScript | 18.76% |
-| Go | 5.11% | HTML | 2.00% |
-| JavaScript | 1.69% | CSS | 1.18% |
-| MDX | 0.69% | C++ | 0.51% |
-| Shell | 0.36% | Makefile | 0.25% |
+| Python | 68.06% | TypeScript | 19.71% |
+| Go | 5.03% | HTML | 1.96% |
+| JavaScript | 1.67% | CSS | 1.37% |
+| MDX | 0.78% | C++ | 0.51% |
+| Shell | 0.35% | Makefile | 0.25% |
 | TeX | 0.20% | Dockerfile | 0.06% |
 | PowerShell | 0.03% | Batchfile | 0.01% |
 <!-- END_LANGUAGES -->
