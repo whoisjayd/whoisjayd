@@ -65,6 +65,23 @@ def _paired_lines(items: list[str]) -> str:
     return "<br>".join(rows)
 
 
+def _table_panel(width: str, cells: list[tuple[str, str, str]]) -> str:
+    rendered_cells = []
+    for cell_width, title, body in cells:
+        rendered_cells.append(
+            f'<td width="{escape(cell_width, quote=True)}" valign="top">'
+            f"<b>{escape(title)}</b><br>{body}"
+            "</td>"
+        )
+    return (
+        '<div align="center">'
+        f'<table width="{escape(width, quote=True)}"><tr>'
+        f"{''.join(rendered_cells)}"
+        "</tr></table>"
+        "</div>"
+    )
+
+
 def generate_readme(stats: GitHubStats) -> str:
     """Generate the complete README markdown."""
     profile = stats.profile
@@ -134,20 +151,13 @@ def generate_readme(stats: GitHubStats) -> str:
     else:
         coding.append("<sub>WakaTime data unavailable</sub>")
 
-    top_panel = (
-        '<table width="100%">'
-        "<tr>"
-        '<td width="41%" valign="top">'
-        f"<b>What I do</b><br>{intro}"
-        "</td>"
-        '<td width="37%" valign="top">'
-        f"<b>At a glance</b><br>{_paired_lines(glance)}"
-        "</td>"
-        '<td width="22%" valign="top">'
-        f"<b>Coding rhythm</b><br>{_join(coding)}"
-        "</td>"
-        "</tr>"
-        "</table>"
+    top_panel = _table_panel(
+        "74%",
+        [
+            ("41%", "What I do", intro),
+            ("37%", "At a glance", _paired_lines(glance)),
+            ("22%", "Coding rhythm", _join(coding)),
+        ],
     )
 
     max_count = max((item.count for item in stats.contributions), default=0)
@@ -179,12 +189,17 @@ def generate_readme(stats: GitHubStats) -> str:
             mix.append(_metric(icon_name, color, _comma(value), label))
 
     repo_lines = []
+    repo_lines.append(
+        "<sub><b>Repository</b> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; "
+        f"{_icon('star', '#e3b341', 12)} <b>Stars</b> &nbsp;&nbsp; "
+        f"{_icon('git-fork', '#79c0ff', 12)} <b>Forks</b></sub>"
+    )
     for repo in stats.top_repos[:5]:
         url = f"https://github.com/{repo.name}"
         repo_lines.append(
             f'<a href="{escape(url, quote=True)}"><b>{escape(_repo_display_name(repo.name))}</b></a>'
-            f" &nbsp; {_icon('star', '#e3b341', 13)} {_comma(repo.stars)}"
-            f" &nbsp; {_icon('git-fork', '#79c0ff', 13)} {_comma(repo.forks)}"
+            f" &nbsp;&nbsp; {_comma(repo.stars)}"
+            f" &nbsp;&nbsp; {_comma(repo.forks)}"
         )
 
     languages = _filtered_languages(stats, threshold=0.2)
@@ -195,21 +210,26 @@ def generate_readme(stats: GitHubStats) -> str:
             f"<b>{escape(name_)}</b> {proportion:.1f}%"
         )
 
-    bottom_panel = (
-        '<table width="100%">'
-        "<tr>"
-        '<td width="33%" valign="top">'
-        f"<b>Contribution History</b><br><br>{_join(contribution_lines)}"
-        f"<br><br><b>Contribution Mix</b><br>{_paired_lines(mix)}"
-        "</td>"
-        '<td width="37%" valign="top">'
-        f"<b>Top Repositories</b><br><br>{_join(repo_lines)}"
-        "</td>"
-        '<td width="30%" valign="top">'
-        f'<b>Most Used Languages</b><br><br><img src="./{LANGUAGE_BAR}" width="100%" height="8" alt="Language usage bar"><br><br>{_paired_lines(language_lines)}'
-        "</td>"
-        "</tr>"
-        "</table>"
+    bottom_panel = _table_panel(
+        "74%",
+        [
+            (
+                "34%",
+                "Contribution History",
+                f"{_join(contribution_lines)}<br><br><b>Contribution Mix</b><br>{_paired_lines(mix)}",
+            ),
+            (
+                "36%",
+                "Top Repositories",
+                _join(repo_lines),
+            ),
+            (
+                "30%",
+                "Most Used Languages",
+                f'<img src="./{LANGUAGE_BAR}" width="100%" height="8" alt="Language usage bar"><br><br>'
+                f"{_paired_lines(language_lines)}",
+            ),
+        ],
     )
 
     visitor_badge = (
