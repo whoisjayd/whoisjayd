@@ -1,0 +1,3 @@
+Backend Engineering — APIs, service design, async systems
+Open Source — small, practical contributions
+Always Learning — recently graduated, constantly exploring new tech

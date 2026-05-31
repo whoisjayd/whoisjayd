@@ -1,46 +1,15 @@
-Hey, I'm Jaydeep 👋
-
-Developer from India focused on backend systems and useful developer tools. Still a student and always learning.
-
-What I work on
-
-- **Backend engineering** — APIs, service design, async systems
-- **Open source** — small, practical contributions
-
-Explore my projects and the auto-generated stats below.
-
-<details>
-<summary><strong>Stats</strong></summary>
+<h3 align="center">Hey, I'm Jaydeep 👋</h3>
 
 <p align="center">
-  <a href="https://wakatime.com/@690b688d-373b-4fda-8b09-61da844c9526">
-    <img src="https://wakatime.com/badge/user/690b688d-373b-4fda-8b09-61da844c9526.svg" alt="WakaTime badge">
-  </a>
-  <img src="https://komarev.com/ghpvc/?username=whoisjayd&color=00d9ff&style=flat-square&label=views" alt="Profile views">
+  <samp>Backend Engineer &nbsp;•&nbsp; Open Source &nbsp;•&nbsp; Graduate</samp>
 </p>
 
-<p align="center">
-  <img src="github-stats/generated/overview.svg" width="49%" alt="GitHub overview">
-  <img src="github-stats/generated/contributions.svg" width="49%" alt="Contribution history">
-</p>
+<p align="center"><a href="https://linkedin.com/in/solanki-jaydeep/" title="LinkedIn"><img height="22" width="22" src="https://cdn.jsdelivr.net/gh/devicons/devicon@latest/icons/linkedin/linkedin-original.svg" alt="LinkedIn"></a> &nbsp; <a href="https://x.com/whynotjaydeep" title="X"><img height="22" width="22" src="https://cdn.simpleicons.org/x/111111/f0f6fc?viewbox=auto" alt="X"></a> &nbsp; <a href="https://peerlist.io/jaydeepsolanki" title="Peerlist"><img height="22" width="22" src="https://cdn.simpleicons.org/peerlist/00AA45?viewbox=auto" alt="Peerlist"></a> &nbsp; <a href="https://jaydeepsolanki.me/" title="Portfolio"><img height="22" width="22" src="https://cdn.simpleicons.org/googlechrome/0969DA?viewbox=auto" alt="Portfolio"></a> &nbsp; <a href="mailto:contactjaydeepsolanki@gmail.com" title="Email"><img height="22" width="22" src="https://cdn.simpleicons.org/gmail/EA4335?viewbox=auto" alt="Email"></a></p>
 
-<p align="center">
-  <img src="github-stats/generated/profile.svg" width="49%" alt="GitHub profile">
-  <img src="github-stats/generated/top-repos.svg" width="49%" alt="Top repositories">
-</p>
+<table width="100%"><tr><td width="41%" valign="top"><b>What I do</b><br>• <b>Backend Engineering</b> — APIs, service design, async systems<br>
+• <b>Open Source</b> — small, practical contributions<br>
+• <b>Always Learning</b> — recently graduated, constantly exploring new tech</td><td width="37%" valign="top"><b>At a glance</b><br><img height="14" width="14" src="https://api.iconify.design/lucide/activity.svg?color=%232dba4e&amp;width=14&amp;height=14" alt=""> <b>1,034</b> contributions &nbsp;&nbsp; <img height="14" width="14" src="https://api.iconify.design/lucide/book-open.svg?color=%2358a6ff&amp;width=14&amp;height=14" alt=""> <b>25</b> repos<br><img height="14" width="14" src="https://api.iconify.design/lucide/lock.svg?color=%238b949e&amp;width=14&amp;height=14" alt=""> <b>7</b> private &nbsp;&nbsp; <img height="14" width="14" src="https://api.iconify.design/lucide/star.svg?color=%23e3b341&amp;width=14&amp;height=14" alt=""> <b>34</b> stars<br><img height="14" width="14" src="https://api.iconify.design/lucide/git-fork.svg?color=%2379c0ff&amp;width=14&amp;height=14" alt=""> <b>22</b> forks &nbsp;&nbsp; <img height="14" width="14" src="https://api.iconify.design/lucide/eye.svg?color=%2358a6ff&amp;width=14&amp;height=14" alt=""> <b>85</b> repo views<br><img height="14" width="14" src="https://api.iconify.design/lucide/users.svg?color=%23a371f7&amp;width=14&amp;height=14" alt=""> <b>54</b> repo visitors &nbsp;&nbsp; <img height="14" width="14" src="https://api.iconify.design/lucide/calendar-days.svg?color=%238b949e&amp;width=14&amp;height=14" alt=""> <b>2021</b> since</td><td width="22%" valign="top"><b>Coding rhythm</b><br><img height="14" width="14" src="https://api.iconify.design/lucide/code-2.svg?color=%232dba4e&amp;width=14&amp;height=14" alt=""> <b>1,122 hrs 3 mins</b> total<br><img height="14" width="14" src="https://api.iconify.design/lucide/calendar.svg?color=%2358a6ff&amp;width=14&amp;height=14" alt=""> <b>2 hrs 56 mins</b> daily<br><img height="14" width="14" src="https://api.iconify.design/lucide/sparkles.svg?color=%23e3b341&amp;width=14&amp;height=14" alt=""> <b>2026-05-30</b> best day</td></tr></table>
 
-**Top Languages**
+<table width="100%"><tr><td width="33%" valign="top"><b>Contribution History</b><br><br>2026 &nbsp; <img src="./generated/progress_2026.svg" width="120" height="8" alt=""> &nbsp; <b>677</b><br>2025 &nbsp; <img src="./generated/progress_2025.svg" width="120" height="8" alt=""> &nbsp; <b>169</b><br>2024 &nbsp; <img src="./generated/progress_2024.svg" width="120" height="8" alt=""> &nbsp; <b>96</b><br>2023 &nbsp; <img src="./generated/progress_2023.svg" width="120" height="8" alt=""> &nbsp; <b>32</b><br>2022 &nbsp; <img src="./generated/progress_2022.svg" width="120" height="8" alt=""> &nbsp; <b>33</b><br>2021 &nbsp; <img src="./generated/progress_2021.svg" width="120" height="8" alt=""> &nbsp; <b>27</b><br><br><b>Contribution Mix</b><br><img height="14" width="14" src="https://api.iconify.design/lucide/git-pull-request.svg?color=%23a371f7&amp;width=14&amp;height=14" alt=""> <b>80</b> PRs &nbsp;&nbsp; <img height="14" width="14" src="https://api.iconify.design/lucide/circle-alert.svg?color=%23f85149&amp;width=14&amp;height=14" alt=""> <b>117</b> issues<br><img height="14" width="14" src="https://api.iconify.design/lucide/messages-square.svg?color=%2358a6ff&amp;width=14&amp;height=14" alt=""> <b>4</b> reviews</td><td width="37%" valign="top"><b>Top Repositories</b><br><br><a href="https://github.com/whoisjayd/gitresume"><b>gitresume</b></a> &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/star.svg?color=%23e3b341&amp;width=13&amp;height=13" alt=""> 11 &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/git-fork.svg?color=%2379c0ff&amp;width=13&amp;height=13" alt=""> 5<br><a href="https://github.com/whoisjayd/flipkart-grid-5.0"><b>flipkart-grid-5.0</b></a> &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/star.svg?color=%23e3b341&amp;width=13&amp;height=13" alt=""> 10 &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/git-fork.svg?color=%2379c0ff&amp;width=13&amp;height=13" alt=""> 1<br><a href="https://github.com/whoisjayd/notewise"><b>notewise</b></a> &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/star.svg?color=%23e3b341&amp;width=13&amp;height=13" alt=""> 9 &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/git-fork.svg?color=%2379c0ff&amp;width=13&amp;height=13" alt=""> 14<br><a href="https://github.com/whoisjayd/finance-manager"><b>finance-manager</b></a> &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/star.svg?color=%23e3b341&amp;width=13&amp;height=13" alt=""> 2 &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/git-fork.svg?color=%2379c0ff&amp;width=13&amp;height=13" alt=""> 0<br><a href="https://github.com/whoisjayd/control-my-home-bulb"><b>control-my-home-bulb</b></a> &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/star.svg?color=%23e3b341&amp;width=13&amp;height=13" alt=""> 1 &nbsp; <img height="13" width="13" src="https://api.iconify.design/lucide/git-fork.svg?color=%2379c0ff&amp;width=13&amp;height=13" alt=""> 0</td><td width="30%" valign="top"><b>Most Used Languages</b><br><br><img src="./generated/language_bar.svg" width="100%" height="8" alt="Language usage bar"><br><br><img height="8" width="8" src="https://singlecolorimage.com/get/3572A5/8x8" alt=""> <b>Python</b> 57.8% &nbsp;&nbsp; <img height="8" width="8" src="https://singlecolorimage.com/get/3178c6/8x8" alt=""> <b>TypeScript</b> 21.8%<br><img height="8" width="8" src="https://singlecolorimage.com/get/41b883/8x8" alt=""> <b>Vue</b> 9.6% &nbsp;&nbsp; <img height="8" width="8" src="https://singlecolorimage.com/get/663399/8x8" alt=""> <b>CSS</b> 2.9%<br><img height="8" width="8" src="https://singlecolorimage.com/get/00ADD8/8x8" alt=""> <b>Go</b> 2.0% &nbsp;&nbsp; <img height="8" width="8" src="https://singlecolorimage.com/get/f1e05a/8x8" alt=""> <b>JavaScript</b> 1.8%<br><img height="8" width="8" src="https://singlecolorimage.com/get/e34c26/8x8" alt=""> <b>HTML</b> 1.8% &nbsp;&nbsp; <img height="8" width="8" src="https://singlecolorimage.com/get/89e051/8x8" alt=""> <b>Shell</b> 1.1%<br><img height="8" width="8" src="https://singlecolorimage.com/get/000080/8x8" alt=""> <b>Lua</b> 0.3% &nbsp;&nbsp; <img height="8" width="8" src="https://singlecolorimage.com/get/fcb32c/8x8" alt=""> <b>MDX</b> 0.3%</td></tr></table>
 
-<!-- START_LANGUAGES -->
-| Language | Share | Language | Share |
-| --- | ---: | --- | ---: |
-| Python | 67.25% | TypeScript | 20.64% |
-| Go | 4.97% | HTML | 1.94% |
-| JavaScript | 1.65% | CSS | 1.38% |
-| MDX | 0.77% | C++ | 0.50% |
-| Shell | 0.35% | Makefile | 0.25% |
-| TeX | 0.19% | Dockerfile | 0.06% |
-| PowerShell | 0.03% | Batchfile | 0.01% |
-<!-- END_LANGUAGES -->
-
-</details>
+<div align="right"><sub><img src="https://komarev.com/ghpvc/?username=whoisjayd&color=00d9ff&style=pixel&label=views" alt="Profile views"> &nbsp; Updated 2026-05-31 06:21 UTC</sub></div>

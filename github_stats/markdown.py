@@ -1,0 +1,234 @@
+"""Profile README markdown generator."""
+
+from __future__ import annotations
+
+from datetime import datetime, timezone
+from html import escape
+from typing import Iterable, List, Tuple
+from urllib.parse import quote
+
+from .content import bullet_lines, load_bullets, social_links
+from .microcomponents import LANGUAGE_BAR, progress_path
+from .models import GitHubStats
+
+LanguageDisplay = Tuple[str, float, str]
+
+
+def _comma(value: int) -> str:
+    return f"{value:,}"
+
+
+def _repo_display_name(full_name: str) -> str:
+    return full_name.split("/", 1)[1] if "/" in full_name else full_name
+
+
+def _icon(name: str, color: str, size: int = 14) -> str:
+    color_value = quote(color if color.startswith("#") else f"#{color}")
+    src = (
+        f"https://api.iconify.design/lucide/{name}.svg"
+        f"?color={color_value}&amp;width={size}&amp;height={size}"
+    )
+    return f'<img height="{size}" width="{size}" src="{src}" alt="">'
+
+
+def _bar(value: int, max_value: int, width: int = 10) -> str:
+    if value <= 0 or max_value <= 0:
+        return "▫" * width
+    filled = max(1, round((value / max_value) * width))
+    return "▰" * filled + "▫" * (width - filled)
+
+
+def _join(items: Iterable[str]) -> str:
+    return "<br>".join(item for item in items if item)
+
+
+def _filtered_languages(
+    stats: GitHubStats, threshold: float = 0.2
+) -> List[LanguageDisplay]:
+    return [
+        (name, data.proportion, data.color or "#8b949e")
+        for name, data in stats.sorted_languages
+        if data.proportion >= threshold
+    ]
+
+
+def _metric(icon_name: str, color: str, value: str, label: str) -> str:
+    return f"{_icon(icon_name, color)} <b>{escape(value)}</b> {escape(label)}"
+
+
+def _paired_lines(items: list[str]) -> str:
+    rows = []
+    for index in range(0, len(items), 2):
+        left = items[index]
+        right = items[index + 1] if index + 1 < len(items) else ""
+        rows.append(f"{left} &nbsp;&nbsp; {right}" if right else left)
+    return "<br>".join(rows)
+
+
+def generate_readme(stats: GitHubStats) -> str:
+    """Generate the complete README markdown."""
+    profile = stats.profile
+    login = profile.login or "whoisjayd"
+    name = profile.name or ("Jaydeep" if login == "whoisjayd" else login)
+    total_stars = sum(repo.stars for repo in stats.owned_repos)
+    total_forks = sum(repo.forks for repo in stats.owned_repos)
+    private_repos = sum(1 for repo in stats.owned_repos if repo.is_private)
+
+    header = f"""<h3 align="center">Hey, I'm {escape(name)} 👋</h3>
+
+<p align="center">
+  <samp>Backend Engineer &nbsp;•&nbsp; Open Source &nbsp;•&nbsp; Graduate</samp>
+</p>"""
+
+    socials = social_links(stats)
+    intro = bullet_lines(load_bullets())
+
+    if socials:
+        header += f'\n\n<p align="center">{socials}</p>'
+
+    glance = []
+    if stats.total_contributions:
+        glance.append(
+            _metric(
+                "activity",
+                "#2dba4e",
+                _comma(stats.total_contributions),
+                "contributions",
+            )
+        )
+    if stats.owned_repos:
+        glance.append(
+            _metric("book-open", "#58a6ff", _comma(len(stats.owned_repos)), "repos")
+        )
+    if private_repos:
+        glance.append(_metric("lock", "#8b949e", _comma(private_repos), "private"))
+    if total_stars:
+        glance.append(_metric("star", "#e3b341", _comma(total_stars), "stars"))
+    if total_forks:
+        glance.append(_metric("git-fork", "#79c0ff", _comma(total_forks), "forks"))
+    if stats.repo_traffic.views:
+        glance.append(
+            _metric("eye", "#58a6ff", _comma(stats.repo_traffic.views), "repo views")
+        )
+    if stats.repo_traffic.visitors:
+        glance.append(
+            _metric(
+                "users", "#a371f7", _comma(stats.repo_traffic.visitors), "repo visitors"
+            )
+        )
+    if profile.joined_year and profile.joined_year != "N/A":
+        glance.append(_metric("calendar-days", "#8b949e", profile.joined_year, "since"))
+
+    coding = []
+    if stats.wakatime and stats.wakatime.total_text:
+        waka = stats.wakatime
+        coding.append(_metric("code-2", "#2dba4e", waka.total_text, "total"))
+        if waka.daily_average_text:
+            coding.append(
+                _metric("calendar", "#58a6ff", waka.daily_average_text, "daily")
+            )
+        if waka.best_day and waka.best_day.get("date"):
+            coding.append(
+                _metric("sparkles", "#e3b341", str(waka.best_day["date"]), "best day")
+            )
+    else:
+        coding.append("<sub>WakaTime data unavailable</sub>")
+
+    top_panel = (
+        '<table width="100%">'
+        "<tr>"
+        '<td width="41%" valign="top">'
+        f"<b>What I do</b><br>{intro}"
+        "</td>"
+        '<td width="37%" valign="top">'
+        f"<b>At a glance</b><br>{_paired_lines(glance)}"
+        "</td>"
+        '<td width="22%" valign="top">'
+        f"<b>Coding rhythm</b><br>{_join(coding)}"
+        "</td>"
+        "</tr>"
+        "</table>"
+    )
+
+    max_count = max((item.count for item in stats.contributions), default=0)
+    contribution_lines = []
+    for item in sorted(stats.contributions, key=lambda row: row.year, reverse=True)[:6]:
+        contribution_lines.append(
+            f"{escape(item.year)} &nbsp; "
+            f'<img src="./{progress_path(item.year)}" width="120" height="8" alt="">'
+            f" &nbsp; <b>{_comma(item.count)}</b>"
+        )
+
+    mix = []
+    for icon_name, color, label, value in (
+        (
+            "git-pull-request",
+            "#a371f7",
+            "PRs",
+            stats.contribution_mix.get("pull_requests", 0),
+        ),
+        ("circle-alert", "#f85149", "issues", stats.contribution_mix.get("issues", 0)),
+        (
+            "messages-square",
+            "#58a6ff",
+            "reviews",
+            stats.contribution_mix.get("reviews", 0),
+        ),
+    ):
+        if value:
+            mix.append(_metric(icon_name, color, _comma(value), label))
+
+    repo_lines = []
+    for repo in stats.top_repos[:5]:
+        url = f"https://github.com/{repo.name}"
+        repo_lines.append(
+            f'<a href="{escape(url, quote=True)}"><b>{escape(_repo_display_name(repo.name))}</b></a>'
+            f" &nbsp; {_icon('star', '#e3b341', 13)} {_comma(repo.stars)}"
+            f" &nbsp; {_icon('git-fork', '#79c0ff', 13)} {_comma(repo.forks)}"
+        )
+
+    languages = _filtered_languages(stats, threshold=0.2)
+    language_lines = []
+    for name_, proportion, color in languages[:10]:
+        language_lines.append(
+            f'<img height="8" width="8" src="https://singlecolorimage.com/get/{escape(color.lstrip("#"), quote=True)}/8x8" alt=""> '
+            f"<b>{escape(name_)}</b> {proportion:.1f}%"
+        )
+
+    bottom_panel = (
+        '<table width="100%">'
+        "<tr>"
+        '<td width="33%" valign="top">'
+        f"<b>Contribution History</b><br><br>{_join(contribution_lines)}"
+        f"<br><br><b>Contribution Mix</b><br>{_paired_lines(mix)}"
+        "</td>"
+        '<td width="37%" valign="top">'
+        f"<b>Top Repositories</b><br><br>{_join(repo_lines)}"
+        "</td>"
+        '<td width="30%" valign="top">'
+        f'<b>Most Used Languages</b><br><br><img src="./{LANGUAGE_BAR}" width="100%" height="8" alt="Language usage bar"><br><br>{_paired_lines(language_lines)}'
+        "</td>"
+        "</tr>"
+        "</table>"
+    )
+
+    visitor_badge = (
+        f'<img src="https://komarev.com/ghpvc/?username={escape(login, quote=True)}&color=00d9ff&style=pixel&label=views" '
+        'alt="Profile views">'
+    )
+    footer = (
+        '<div align="right">'
+        f"<sub>{visitor_badge} &nbsp; Updated {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')}</sub>"
+        "</div>"
+    )
+
+    return "\n\n".join([header, top_panel, bottom_panel, footer])
+
+
+def write_readme(content: str, path: str = "README.md") -> str:
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+    return path
+
+
+__all__ = ["generate_readme", "write_readme"]

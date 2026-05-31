@@ -1,0 +1,9 @@
+<svg width="120" height="8" viewBox="0 0 120 8" xmlns="http://www.w3.org/2000/svg" role="img">
+<style>
+.track { fill: #21262d; }
+.fill { fill: #2dba4e; }
+@media (prefers-color-scheme: light) { .track { fill: #d8dee4; } }
+</style>
+<rect class="track" x="0" y="0" width="120" height="8" rx="4"/>
+<rect class="fill" x="0" y="0" width="30" height="8" rx="4"/>
+</svg>
