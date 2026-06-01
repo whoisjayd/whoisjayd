@@ -39,8 +39,13 @@ async def main() -> None:
         )
         stats = await fetcher.fetch_all()
 
+    previous_readme = None
+    if os.path.exists(settings.readme_path):
+        with open(settings.readme_path, encoding="utf-8") as f:
+            previous_readme = f.read()
+
     generate_microcomponents(stats, REPO_ROOT)
-    write_readme(generate_readme(stats), settings.readme_path)
+    write_readme(generate_readme(stats, previous_readme), settings.readme_path)
     print("README.md updated")
 
 

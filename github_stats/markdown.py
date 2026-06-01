@@ -2,24 +2,25 @@
 
 from __future__ import annotations
 
+import re
 from datetime import datetime, timezone
 from html import escape
-from typing import Iterable, List, Tuple
+from typing import List, Tuple
 from urllib.parse import quote
 
 from .content import bullet_lines, load_bullets, social_links
-from .microcomponents import LANGUAGE_BAR, progress_path
+from .language_colors import with_distinct_language_colors
 from .models import GitHubStats
 
 LanguageDisplay = Tuple[str, float, str]
+LANGUAGE_BAR_URL = (
+    "https://raw.githubusercontent.com/whoisjayd/whoisjayd/"
+    "refs/heads/main/generated/language_bar.svg"
+)
 
 
 def _comma(value: int) -> str:
     return f"{value:,}"
-
-
-def _repo_display_name(full_name: str) -> str:
-    return full_name.split("/", 1)[1] if "/" in full_name else full_name
 
 
 def _icon(name: str, color: str, size: int = 14) -> str:
@@ -31,70 +32,58 @@ def _icon(name: str, color: str, size: int = 14) -> str:
     return f'<img height="{size}" width="{size}" src="{src}" alt="">'
 
 
-def _bar(value: int, max_value: int, width: int = 10) -> str:
-    if value <= 0 or max_value <= 0:
-        return "▫" * width
-    filled = max(1, round((value / max_value) * width))
-    return "▰" * filled + "▫" * (width - filled)
-
-
-def _join(items: Iterable[str]) -> str:
-    return "<br>".join(item for item in items if item)
-
-
 def _filtered_languages(
     stats: GitHubStats, threshold: float = 0.2
 ) -> List[LanguageDisplay]:
-    return [
-        (name, data.proportion, data.color or "#8b949e")
-        for name, data in stats.sorted_languages
-        if data.proportion >= threshold
-    ]
+    return with_distinct_language_colors(
+        [
+            (name, data.proportion)
+            for name, data in stats.sorted_languages
+            if data.proportion >= threshold
+        ]
+    )
 
 
 def _metric(icon_name: str, color: str, value: str, label: str) -> str:
     return f"{_icon(icon_name, color)} <b>{escape(value)}</b> {escape(label)}"
 
 
-def _paired_lines(items: list[str]) -> str:
-    rows = []
-    for index in range(0, len(items), 2):
-        left = items[index]
-        right = items[index + 1] if index + 1 < len(items) else ""
-        rows.append(f"{left} &nbsp;&nbsp; {right}" if right else left)
-    return "<br>".join(rows)
+def _flow_items(items: list[str], separator: str = " &nbsp;&nbsp; ") -> str:
+    return separator.join(items)
 
 
-def _table_panel(width: str, cells: list[tuple[str, str, str]]) -> str:
-    rendered_cells = []
-    for cell_width, title, body in cells:
-        rendered_cells.append(
-            f'<td width="{escape(cell_width, quote=True)}" valign="top">'
-            f"<b>{escape(title)}</b><br>{body}"
-            "</td>"
-        )
+def _previous_metric(previous_readme: str | None, label: str) -> str | None:
+    if not previous_readme:
+        return None
+    match = re.search(rf"<b>([^<]+)</b>\s+{re.escape(label)}", previous_readme)
+    return match.group(1) if match else None
+
+
+def _panel_cell(title: str, body: str) -> str:
+    return f'<td valign="top"><b>{escape(title)}</b><br><br>{body}</td>'
+
+
+def _profile_panel(intro: str, glance: str, languages: str) -> str:
     return (
-        '<div align="center">'
-        f'<table width="{escape(width, quote=True)}"><tr>'
-        f"{''.join(rendered_cells)}"
-        "</tr></table>"
-        "</div>"
+        '<div align="center"><table width="100%">'
+        f"<tr>{_panel_cell('What I do', intro)}</tr>"
+        f"<tr>{_panel_cell('At a glance', glance)}</tr>"
+        f"<tr>{_panel_cell('Most Used Languages', languages)}</tr>"
+        "</table></div>"
     )
 
 
-def generate_readme(stats: GitHubStats) -> str:
+def generate_readme(stats: GitHubStats, previous_readme: str | None = None) -> str:
     """Generate the complete README markdown."""
     profile = stats.profile
     login = profile.login or "whoisjayd"
     name = profile.name or ("Jaydeep" if login == "whoisjayd" else login)
     total_stars = sum(repo.stars for repo in stats.owned_repos)
-    total_forks = sum(repo.forks for repo in stats.owned_repos)
-    private_repos = sum(1 for repo in stats.owned_repos if repo.is_private)
 
     header = f"""<h3 align="center">Hey, I'm {escape(name)} 👋</h3>
 
 <p align="center">
-  <samp>Backend Engineer &nbsp;•&nbsp; Open Source &nbsp;•&nbsp; Graduate</samp>
+  <samp>Backend Engineer&nbsp;•&nbsp;Open Source&nbsp;•&nbsp;Graduate</samp>
 </p>"""
 
     socials = social_links(stats)
@@ -117,87 +106,25 @@ def generate_readme(stats: GitHubStats) -> str:
         glance.append(
             _metric("book-open", "#58a6ff", _comma(len(stats.owned_repos)), "repos")
         )
-    if private_repos:
-        glance.append(_metric("lock", "#8b949e", _comma(private_repos), "private"))
     if total_stars:
         glance.append(_metric("star", "#e3b341", _comma(total_stars), "stars"))
-    if total_forks:
-        glance.append(_metric("git-fork", "#79c0ff", _comma(total_forks), "forks"))
-    if stats.repo_traffic.views:
-        glance.append(
-            _metric("eye", "#58a6ff", _comma(stats.repo_traffic.views), "repo views")
-        )
-    if stats.repo_traffic.visitors:
-        glance.append(
-            _metric(
-                "users", "#a371f7", _comma(stats.repo_traffic.visitors), "repo visitors"
-            )
-        )
-    if profile.joined_year and profile.joined_year != "N/A":
-        glance.append(_metric("calendar-days", "#8b949e", profile.joined_year, "since"))
 
-    coding = []
     if stats.wakatime and stats.wakatime.total_text:
         waka = stats.wakatime
-        coding.append(_metric("code-2", "#2dba4e", waka.total_text, "total"))
+        glance.append(_metric("code-2", "#2dba4e", waka.total_text, "coding"))
         if waka.daily_average_text:
-            coding.append(
+            glance.append(
                 _metric("calendar", "#58a6ff", waka.daily_average_text, "daily")
             )
-        if waka.best_day and waka.best_day.get("date"):
-            coding.append(
-                _metric("sparkles", "#e3b341", str(waka.best_day["date"]), "best day")
-            )
     else:
-        coding.append("<sub>WakaTime data unavailable</sub>")
-
-    top_panel = _table_panel(
-        "86%",
-        [
-            ("40%", "What I do", intro),
-            ("37%", "At a glance", _paired_lines(glance)),
-            ("23%", "Coding rhythm", _join(coding)),
-        ],
-    )
-
-    max_count = max((item.count for item in stats.contributions), default=0)
-    contribution_lines = []
-    for item in sorted(stats.contributions, key=lambda row: row.year, reverse=True)[:6]:
-        contribution_lines.append(
-            f"{escape(item.year)} &nbsp; "
-            f'<img src="./{progress_path(item.year)}" width="120" height="8" alt="">'
-            f" &nbsp; <b>{_comma(item.count)}</b>"
-        )
-
-    mix = []
-    for icon_name, color, label, value in (
-        (
-            "git-pull-request",
-            "#a371f7",
-            "PRs",
-            stats.contribution_mix.get("pull_requests", 0),
-        ),
-        ("circle-alert", "#f85149", "issues", stats.contribution_mix.get("issues", 0)),
-        (
-            "messages-square",
-            "#58a6ff",
-            "reviews",
-            stats.contribution_mix.get("reviews", 0),
-        ),
-    ):
-        if value:
-            mix.append(_metric(icon_name, color, _comma(value), label))
-
-    repo_lines = []
-    for repo in stats.top_repos[:5]:
-        url = f"https://github.com/{repo.name}"
-        repo_lines.append(
-            f'<a href="{escape(url, quote=True)}"><b>{escape(_repo_display_name(repo.name))}</b></a>'
-            " &nbsp; "
-            f"<sub>{_icon('star', '#e3b341', 12)} {_comma(repo.stars)}"
-            " &nbsp;&nbsp; "
-            f"{_icon('git-fork', '#79c0ff', 12)} {_comma(repo.forks)}</sub>"
-        )
+        previous_coding = _previous_metric(previous_readme, "coding")
+        previous_daily = _previous_metric(previous_readme, "daily")
+        if previous_coding:
+            glance.append(_metric("code-2", "#2dba4e", previous_coding, "coding"))
+        if previous_daily:
+            glance.append(_metric("calendar", "#58a6ff", previous_daily, "daily"))
+    if profile.joined_year and profile.joined_year != "N/A":
+        glance.append(_metric("calendar-days", "#8b949e", profile.joined_year, "since"))
 
     languages = _filtered_languages(stats, threshold=0.2)
     language_lines = []
@@ -207,26 +134,13 @@ def generate_readme(stats: GitHubStats) -> str:
             f"<b>{escape(name_)}</b> {proportion:.1f}%"
         )
 
-    bottom_panel = _table_panel(
-        "100%",
-        [
-            (
-                "27%",
-                "Contribution History",
-                f"{_join(contribution_lines)}<br><br><b>Contribution Mix</b><br>{_paired_lines(mix)}",
-            ),
-            (
-                "35%",
-                "Top Repositories",
-                _join(repo_lines),
-            ),
-            (
-                "38%",
-                "Most Used Languages",
-                f'<img src="./{LANGUAGE_BAR}" width="100%" height="8" alt="Language usage bar"><br><br>'
-                f"{_paired_lines(language_lines)}",
-            ),
-        ],
+    profile_panel = _profile_panel(
+        intro,
+        _flow_items(glance, separator=" &nbsp;&nbsp;·&nbsp;&nbsp; "),
+        '<div align="left">'
+        f'<img src="{LANGUAGE_BAR_URL}" width="100%" height="12" alt="Language usage bar"><br><br>'
+        f"{_flow_items(language_lines)}"
+        "</div>",
     )
 
     visitor_badge = (
@@ -239,7 +153,7 @@ def generate_readme(stats: GitHubStats) -> str:
         "</div>"
     )
 
-    return "\n\n".join([header, top_panel, bottom_panel, footer])
+    return "\n\n".join([header, profile_panel, footer])
 
 
 def write_readme(content: str, path: str = "README.md") -> str:
