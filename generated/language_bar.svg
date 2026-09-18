@@ -1,5 +1,5 @@
 <svg width="1200" height="12" viewBox="0 0 1200 12" xmlns="http://www.w3.org/2000/svg" role="img">
 <rect x="0" y="0" width="1200" height="12" rx="6" fill="#21262d" opacity="0.65"/>
-<g clip-path="url(#clip)"><rect x="0" y="0" width="851" height="12" fill="#76C9E5"/><rect x="851" y="0" width="265" height="12" fill="#E887E3"/><rect x="1116" y="0" width="30" height="12" fill="#E5D476"/><rect x="1146" y="0" width="20" height="12" fill="#8796E8"/><rect x="1166" y="0" width="14" height="12" fill="#76E57B"/><rect x="1180" y="0" width="7" height="12" fill="#E887A9"/><rect x="1187" y="0" width="5" height="12" fill="#E5A476"/><rect x="1192" y="0" width="8" height="12" fill="#B387E8"/></g>
+<g clip-path="url(#clip)"><rect x="0" y="0" width="855" height="12" fill="#76C9E5"/><rect x="855" y="0" width="260" height="12" fill="#E887E3"/><rect x="1115" y="0" width="29" height="12" fill="#E5D476"/><rect x="1144" y="0" width="20" height="12" fill="#8796E8"/><rect x="1164" y="0" width="14" height="12" fill="#76E57B"/><rect x="1178" y="0" width="7" height="12" fill="#E887A9"/><rect x="1185" y="0" width="5" height="12" fill="#E5A476"/><rect x="1190" y="0" width="10" height="12" fill="#B387E8"/></g>
 <defs><clipPath id="clip"><rect x="0" y="0" width="1200" height="12" rx="6"/></clipPath></defs>
 </svg>
